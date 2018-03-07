@@ -9,6 +9,6 @@ The name is subject to change.
 
 ## Project Members
 
-- Refik Can MALLI [Email](mailto: refikcan.malli@mail.polimi.it)
-- Yiğit Yusuf PILAVCI [Email](mailto: ?)
-- Şemsi Yiğit ÖZGÜMÜŞ [Email](mailto: ?)
+- Refik Can MALLI [Email](mailto:refikcan.malli@mail.polimi.it)
+- Yiğit Yusuf PILAVCI [Email](mailto:?)
+- Şemsi Yiğit ÖZGÜMÜŞ [Email](mailto:?)
