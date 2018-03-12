@@ -69,3 +69,20 @@ Example structure for each idea:
 
 ## Yigit
 
+### Synthesizing Obama: Learning Lip Sync from Audio
+
+-[link](https://grail.cs.washington.edu/projects/AudioToObama/)
+- Could be done with new data
+- Visual aspects
+
+### High-Resolution Image Synthesis and Semantic Manipulation with Conditional GANs
+
+- [link](https://tcwang0509.github.io/pix2pixHD/)
+- Close to matteucci's topic.
+- Dataset finding could be convenient
+
+### Artistic style transfer for videos
+
+- [link](https://arxiv.org/abs/1604.08610)
+- [implementation](https://github.com/manuelruder/artistic-videos)
+
