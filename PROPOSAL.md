@@ -49,7 +49,7 @@ Example structure for each idea:
 ### iMaterialist Challenge (Furniture) at FGVC5 by Google
 
 - Image Classification of Furniture & Home Goods.
-- [Kaggle Competition]https://www.kaggle.com/c/imaterialist-challenge-furniture-2018#description
+- [Kaggle Competition](https://www.kaggle.com/c/imaterialist-challenge-furniture-2018#description)
 - 3 months left
 - advanced topic
 
