@@ -96,7 +96,7 @@ Example structure for each idea:
 - [Camera Identifications From Images](https://www.kaggle.com/c/sp-society-camera-model-identification)
 - [Finding nuclei for medical purposes](https://www.kaggle.com/c/data-science-bowl-2018/data)
 
-## Coming Soon
+### Coming Soon
 
 
 ## Yigit
