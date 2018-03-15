@@ -67,6 +67,38 @@ Example structure for each idea:
 
 ## Yusuf
 
+### Depth Estimation
+
+- Depth Estimation from single image (Data-set is present)
+- [CS231 Paper](https://drive.google.com/open?id=1jmyvvENU9qE3Uk0zSozvyN91TrYv67vj)
+- [Original Paper]( https://drive.google.com/open?id=1jXUONLzntZZmvdHQYrkq8aQ1BunJX9YX)
+
+### Game Player
+
+- A learning agent plays X (X can be any game)
+- Dataset created by screenshots
+- [CS231 Paper – Super Hexagon](https://drive.google.com/open?id=1Yc3yb63CXLbVKVo7syPqg8nImAr2u6Cq)
+- [CS231 Paper – Geometry Dash](https://drive.google.com/open?id=1Yc3yb63CXLbVKVo7syPqg8nImAr2u6Cq)
+
+### Image2Latex
+
+- From image to latex scripts
+- [CS231 Paper – Image to Latex]( https://drive.google.com/open?id=1av4N5uOCKnMJAAI7Hhkqd4Jsb_4f5ewc)
+
+### Painting
+
+- Some implementation is included in paper
+- [CS231 Paper – Exploring Painting Themes](https://drive.google.com/open?id=1iVOwi5hN1P7Y6zXiiTSemyv2pjSg6qSA)
+
+### Kaggle Challenges
+
+- [Titanic](https://www.kaggle.com/c/titanic)
+- [Camera Identifications From Images](https://www.kaggle.com/c/sp-society-camera-model-identification)
+- [Finding nuclei for medical purposes](https://www.kaggle.com/c/data-science-bowl-2018/data)
+
+### Coming Soon
+
+
 ## Yigit
 
 ### Synthesizing Obama: Learning Lip Sync from Audio
