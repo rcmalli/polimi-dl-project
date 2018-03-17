@@ -142,3 +142,15 @@ Example structure for each idea:
 - [link](https://arxiv.org/abs/1604.08610)
 - [implementation](https://github.com/manuelruder/artistic-videos)
 
+### Mar IO re implementation
+
+- [https://www.youtube.com/watch?v=qv6UVOQ0F44](https://www.youtube.com/watch?v=qv6UVOQ0F44)
+- learning method can be changed. All code is nearly ready
+
+### A Deep Generative Framework for Paraphrase Generation
+
+-[paper](https://arxiv.org/abs/1709.05074v1)
+
+### Deep Quaternion Networks
+- [paper](https://arxiv.org/abs/1712.04604v2)
+- A problem can be implemented using this technique. further research must be done
