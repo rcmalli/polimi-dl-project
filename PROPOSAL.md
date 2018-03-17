@@ -96,7 +96,31 @@ Example structure for each idea:
 - [Camera Identifications From Images](https://www.kaggle.com/c/sp-society-camera-model-identification)
 - [Finding nuclei for medical purposes](https://www.kaggle.com/c/data-science-bowl-2018/data)
 
-### Coming Soon
+### 3D Point Cloud Classification - Graph CNN 
+
+- [3D Point Cloud Classification](https://drive.google.com/open?id=1i5vhCCQankk6wEiYjYPt60zokJIQPEES)
+- [Implemenation](https://github.com/maggie0106/Graph-CNN-in-3D-Point-Cloud-Classification)
+- [Reference to techniques](https://github.com/mdeff/cnn_graph) 
+
+### Population-based Disease Prediction - Graph CNN
+
+- Similar Workflow with previous one
+- [Population-based Disease Prediction](https://drive.google.com/open?id=1K1peKY6G14Y8yUimhHoPTR8Gba9qqQ5I)
+- [Implementation](https://github.com/parisots/population-gcn)
+
+### 3D Mesh Segmentation - Graph CNN
+
+- [Only Implementation](https://github.com/Conchylicultor/DeepLearningOnGraph)
+
+### BrainCNN - Graph CNN
+
+- [Implementation](https://github.com/AmineEch/BrainCNN)
+- [Paper](https://drive.google.com/open?id=1-dDR6yF4dTaiCvAAtNohkLzKhNPBqubN)
+
+### CNN-for-Stock-Market-Prediction
+
+- [Kaggle link](https://www.kaggle.com/borismarjanovic/price-volume-data-for-all-us-stocks-etfs)
+- [Implementation](https://github.com/hardyqr/CNN-for-Stock-Market-Prediction-PyTorch)
 
 
 ## Yigit
