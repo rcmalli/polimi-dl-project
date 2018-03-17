@@ -127,7 +127,7 @@ Example structure for each idea:
 
 ### Synthesizing Obama: Learning Lip Sync from Audio
 
--[link](https://grail.cs.washington.edu/projects/AudioToObama/)
+- [link](https://grail.cs.washington.edu/projects/AudioToObama/)
 - Could be done with new data
 - Visual aspects
 
@@ -149,7 +149,7 @@ Example structure for each idea:
 
 ### A Deep Generative Framework for Paraphrase Generation
 
--[paper](https://arxiv.org/abs/1709.05074v1)
+- [paper](https://arxiv.org/abs/1709.05074v1)
 
 ### Deep Quaternion Networks
 - [paper](https://arxiv.org/abs/1712.04604v2)
