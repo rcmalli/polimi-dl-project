@@ -45,3 +45,27 @@ Example Structure:
 - Relevance Level : 2
 - [link](https://arxiv.org/abs/1704.03489)
 - In perspective of SLAM
+
+### Deeper Depth Prediction with Fully Convolutional Residual Networks
+- Relevance Level : 1
+- [link](https://arxiv.org/pdf/1606.00373.pdf)
+- [implementation](https://github.com/iro-cp/FCRN-DepthPrediction)
+
+### Fully Convolutional Network for Depth Estimation and Semantic Segmentation
+- Relevance Level : 1
+- [link](http://cs231n.stanford.edu/reports/2017/pdfs/209.pdf)
+- [implementation](https://github.com/iapatil/depth-semantic-fully-conv)
+
+### Depth Estimation from Monocular Image with Sparse Known Labels
+- Relevance Level : 2
+- [link](http://sunw.csail.mit.edu/abstract/Depth_Estimation_from.pdf)
+
+### Unsupervised CNN for Single View Depth Estimation: Geometry to the Rescue
+- Relevance Level : 1
+- [link](https://arxiv.org/pdf/1603.04992.pdf)
+- [implementation](https://github.com/Ravi-Garg/Unsupervised_Depth_Estimation) 
+
+### Depth and surface normal estimation from monocular images using regression on deep features and hierarchical CRFs
+- Relevance Level : 2
+- [link](http://users.cecs.anu.edu.au/~yuchao/files/Li_Depth_and_Surface_2015_CVPR_paper.pdf)
+
