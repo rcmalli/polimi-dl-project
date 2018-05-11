@@ -9,7 +9,8 @@ Example Structure:
 
 ### NYU Depth Map
 - [link](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html)
-- There is a mat file which is called as labeled dataset. I think this dataset is useful and essential for our experiments. As far as I understand, mat file includes a struct with different fields listed in the link. The significant parts obviously are "depths" and "images". As far as I see, no special preprocessing is suggested however please warn me if there exists.
+- There is a mat file which is called as labeled dataset. I think this dataset is useful and essential for our experiments. As far as I understand, mat file includes a struct with different fields listed in the link. The significant parts obviously are "depths" and "images". As far as I see, no special preprocessing is suggested however please warn me if there exists. 
+- Values in "depths" are in meters
 
 ### KITTI Outdoor Dataset
 - [link](http://www.cvlibs.net/datasets/kitti/raw_data.php)
@@ -28,5 +29,6 @@ Example Structure:
 
 2) Train400Img.tar.gz
 	Images all in resolution 2272x1704
+
 
 
