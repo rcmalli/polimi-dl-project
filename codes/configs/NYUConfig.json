@@ -1,0 +1,10 @@
+{
+	"data_path":"./Data/mini_nyu_1pool.mat",
+	"exp_name": "NYU",
+	"num_epochs": 10,
+	"num_iter_per_epoch": 100,
+	"learning_rate": 0.001,
+	"batch_size": 16,
+	"max_to_keep":5,
+	"input_size":[32,32,3],
+	"output_size":[16,16,1] }
