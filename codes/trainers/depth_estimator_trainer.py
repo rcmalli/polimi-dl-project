@@ -41,8 +41,8 @@ class DepthTrainer(BaseTrain):
 		batch_x, batch_y = next(self.data.next_batch(self.config.batch_size))
 		feed_dict = {self.model.x: batch_x, self.model.y: batch_y, self.model.is_training: True}
 
-		#_, loss, acc = self.sess.run([self.model.train_step, self.model.mse, self.model.accuracy],
-		#							 feed_dict=feed_dict)
+		_, loss, acc = self.sess.run([self.model.train_step, self.model.mse, self.model.accuracy],
+									 feed_dict=feed_dict)
 		
 		
 		return loss, acc
