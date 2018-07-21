@@ -1,3 +1,10 @@
+#MAC
+.DS_Store
+
+# Tensorflow
+
+experiments/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
