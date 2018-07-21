@@ -1,0 +1,13 @@
+{
+	"image_folder":"./Data/Fake/Image",
+	"depthmap_folder":"./Data/Fake/Depth",
+	"exp_name": "NYU-dataloader",
+	"num_epochs": 50,
+	"num_threads": 2,
+	"augment": true,
+	"num_iter_per_epoch": 30,
+	"learning_rate": 0.01,
+	"batch_size": 32,
+	"max_to_keep":5,
+	"input_size":[32,32,3],
+	"output_size":[16,16,1] }
