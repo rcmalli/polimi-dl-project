@@ -3,6 +3,15 @@ import h5py
 import tensorflow as tf
 import random
 import os
+import pickle
+
+
+def _resize_data(image, depthmap):
+    """Resizes images to smaller dimensions."""
+    image = tf.image.resize_images(image, [48, 64])
+    depthmap = tf.image.resize_images(depthmap, [24, 32])
+
+    return image, depthmap
 
 def _flip_left_right(image, depthmap):
     """Randomly flips image and depth_map left or right in accord."""
@@ -25,15 +34,25 @@ def _normalize_data(image, depthmap):
     return image, depthmap
 
 
-def _parse_data(image_paths, depthmap_paths):
+def _parse_depthmap(image_path, depthmap_path):
+
+    fp = open(depthmap_path, 'rb')
+    depthmap = pickle.load(fp)
+    # depthmap = np.load(depthmap_path)
+    depthmap = depthmap.astype(np.float32)
+    depthmap = np.expand_dims(depthmap, axis=-1)
+    # fp.close()
+
+    return image_path, depthmap
+
+
+def _parse_image(image_path, depthmap):
+
     """Reads image and depth_map files"""
-    image_content = tf.read_file(image_paths)
-    depthmap_content = tf.read_file(depthmap_paths)
+    image_content = tf.read_file(image_path)
+    image = tf.image.decode_png(image_content, channels=3)
 
-    images = tf.image.decode_png(image_content, channels=3)
-    depthmaps = tf.image.decode_png(depthmap_content, channels=1)
-
-    return images, depthmaps
+    return image, depthmap
 
 
 class NYUDataLoader:
@@ -46,8 +65,8 @@ class NYUDataLoader:
         self.batch_size = self.config.batch_size
         self.num_threads = self.config.num_threads
 
-        self.image_paths = [os.path.join(image_folder, x) for x in os.listdir(image_folder) if x.endswith('.jpeg')]
-        self.depthmap_paths = [os.path.join(depthmap_folder, x) for x in os.listdir(depthmap_folder) if x.endswith('.jpeg')]
+        self.image_paths = sorted([os.path.join(image_folder, x) for x in os.listdir(image_folder) if x.endswith('.jpg')])
+        self.depthmap_paths = sorted([os.path.join(depthmap_folder, x) for x in os.listdir(depthmap_folder) if x.endswith('.pkl')])
 
         images_name_tensor = tf.constant(self.image_paths)
         mask_name_tensor = tf.constant(self.depthmap_paths)
@@ -56,9 +75,13 @@ class NYUDataLoader:
         self.data = tf.data.Dataset.from_tensor_slices(
             (images_name_tensor, mask_name_tensor))
 
-        # Parse images and labels
         self.data = self.data.map(
-            _parse_data, num_parallel_calls=self.num_threads).prefetch(30)
+            lambda image_path, depthmap_path: tuple(tf.py_func(
+                _parse_depthmap, [image_path, depthmap_path], [image_path.dtype, tf.float32])))
+
+        # Parse images
+        self.data = self.data.map(
+            _parse_image, num_parallel_calls=self.num_threads).prefetch(30)
 
         # If augmentation is to be applied
         if self.augment:
@@ -69,7 +92,7 @@ class NYUDataLoader:
         self.data = self.data.batch(self.batch_size)
 
         # Resize to smaller dims for speed
-        # data = data.map(_resize_data, num_parallel_calls=num_threads).prefetch(30)
+        self.data = self.data.map(_resize_data, num_parallel_calls=self.num_threads).prefetch(30)
 
         # Normalize
         self.data = self.data.map(_normalize_data,
