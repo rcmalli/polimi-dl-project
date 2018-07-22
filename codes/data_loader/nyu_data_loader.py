@@ -106,6 +106,5 @@ class NYUDataLoader:
 
         # Data set init. op
         self.iter_init_op = self.iterator.make_initializer(self.data)
-
         self.x, self.y = self.iterator.get_next()
 

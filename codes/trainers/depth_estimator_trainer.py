@@ -40,6 +40,6 @@ class DepthTrainer(BaseTrain):
     def train_step(self):
         # Next batch returns a generator object(iterator). Next function takes the next input from this object
         feed_dict = {self.model.is_training: True}
-        _, loss, acc = self.sess.run([self.model.train_step, self.model.mse, self.model.accuracy],
+        _, loss, acc = self.sess.run([self.model.train_step, self.model.loss_function, self.model.accuracy],
                                      feed_dict=feed_dict)
         return loss, acc
