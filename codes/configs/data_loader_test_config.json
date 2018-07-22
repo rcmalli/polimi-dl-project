@@ -1,0 +1,15 @@
+{
+	"image_folder":"./Data/Fake/Image",
+	"depthmap_folder":"./Data/Fake/Depth",
+	"exp_name": "NYU-dataloader",
+	"num_epochs": 50,
+	"loss_type":"SIMSE",
+	"lamda":0.5,
+	"num_threads": 2,
+	"augment": true,
+	"num_iter_per_epoch": 3,
+	"learning_rate": 0.01,
+	"batch_size": 32,
+	"max_to_keep":5,
+	"input_size":[400,400,3],
+	"output_size":[400,400,1] }
