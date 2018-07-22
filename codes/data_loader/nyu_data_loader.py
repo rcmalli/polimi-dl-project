@@ -65,7 +65,7 @@ class NYUDataLoader:
         self.batch_size = self.config.batch_size
         self.num_threads = self.config.num_threads
 
-        self.image_paths = sorted([os.path.join(image_folder, x) for x in os.listdir(image_folder) if x.endswith('.jpeg')])
+        self.image_paths = sorted([os.path.join(image_folder, x) for x in os.listdir(image_folder) if x.endswith('.jpg')])
         self.depthmap_paths = sorted([os.path.join(depthmap_folder, x) for x in os.listdir(depthmap_folder) if x.endswith('.pkl')])
 
         images_name_tensor = tf.constant(self.image_paths)

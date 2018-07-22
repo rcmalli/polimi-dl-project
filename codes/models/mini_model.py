@@ -43,6 +43,7 @@ class MiniModel(BaseModel):
         # Change the value of this parameter in case of changing architecture
         self.output = outputLayer
 
+
     def init_saver(self):
         # here you initialize the tensorflow saver that will be used in saving the checkpoints.
         self.saver = tf.train.Saver(max_to_keep=self.config.max_to_keep)
