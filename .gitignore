@@ -1,8 +1,9 @@
 #MAC
 .DS_Store
 
-# Tensorflow
+# Project
 
+codes/Data/Fake/
 experiments/*
 .idea/
 
