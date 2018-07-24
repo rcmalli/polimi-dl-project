@@ -1,7 +1,7 @@
 from base.base_train import BaseTrain
 from tqdm import tqdm
 import numpy as np
-
+import tensorflow as tf
 
 class DepthTrainer(BaseTrain):
     def __init__(self, sess, model, data, config, logger):
@@ -18,9 +18,11 @@ class DepthTrainer(BaseTrain):
 
         # Loop for the batch
         for _ in loop:
-            loss, acc = self.train_step()
-            lose_list.append(loss)
-            acc_list.append(acc)
+            update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+            with tf.control_dependencies(update_ops):
+                loss, acc = self.train_step()
+                lose_list.append(loss)
+                acc_list.append(acc)
 
         loss = np.mean(lose_list)
         acc = np.mean(acc_list)
