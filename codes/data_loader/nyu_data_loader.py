@@ -6,10 +6,11 @@ import os
 import pickle
 
 
+
 def _resize_data(image, depthmap):
     """Resizes images to smaller dimensions."""
-    #image = tf.image.resize_images(image, [48, 64])
-    #depthmap = tf.image.resize_images(depthmap, [24, 32])
+    image = tf.image.resize_images(image, [224, 224])
+    depthmap = tf.image.resize_images(depthmap, [112, 112])
 
     return image, depthmap
 
@@ -99,6 +100,10 @@ class NYUDataLoader:
                         num_parallel_calls=self.num_threads).prefetch(30)
 
         self.data = self.data.shuffle(30)
+
+        # shapes = [tf.TensorShape([224, 224, 3]), tf.TensorShape([224, 224, 1])]
+        #
+        # result = self.data.apply(tf.contrib.data.assert_element_shape(shapes))
 
         # Create iterator
         self.iterator = tf.data.Iterator.from_structure(
