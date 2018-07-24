@@ -8,8 +8,8 @@ import pickle
 
 def _resize_data(image, depthmap):
     """Resizes images to smaller dimensions."""
-    image = tf.image.resize_images(image, [48, 64])
-    depthmap = tf.image.resize_images(depthmap, [24, 32])
+    #image = tf.image.resize_images(image, [48, 64])
+    #depthmap = tf.image.resize_images(depthmap, [24, 32])
 
     return image, depthmap
 
