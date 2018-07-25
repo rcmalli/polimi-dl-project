@@ -3,7 +3,8 @@
 
 # Project
 
-codes/Data/Fake/
+codes/Data/*
+codes/Data/
 experiments/*
 .idea/
 
