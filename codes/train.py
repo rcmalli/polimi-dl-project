@@ -3,6 +3,7 @@ import tensorflow as tf
 from data_loader.nyu_data_loader import NYUDataLoader
 
 from models.mini_model import MiniModel
+from models.resnet_fast import Resnet50Model
 from trainers.depth_estimator_trainer import DepthTrainer
 from utils.config import process_config
 from utils.dirs import create_dirs
@@ -28,7 +29,9 @@ def main():
     # create your data generator
     data = NYUDataLoader(config)
     # create an instance of the model you want
-    model = MiniModel(config, data.x, data.y)
+    #model = MiniModel(config, data.x, data.y)
+
+    model = Resnet50Model(config, sess, data.x, data.y)
     # load model if exists
     model.load(sess)
 

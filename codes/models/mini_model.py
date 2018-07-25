@@ -17,23 +17,25 @@ class MiniModel(BaseModel):
         # poolOut1 = tf.layers.max_pooling2d(inputs=convOut1, pool_size=[2, 2], strides=2)
         convOut2 = tf.layers.conv2d(inputs=convOut1, filters=1, kernel_size=[3, 3], padding="same",
                                     activation=tf.nn.relu)
-        poolOut2 = tf.layers.max_pooling2d(inputs=convOut2, pool_size=[2, 2], strides=2,)
+        poolOut2 = tf.layers.max_pooling2d(inputs=convOut2, pool_size=[2, 2], strides=2, )
 
         # Put the last layer for the rest of the code
         outputLayer = poolOut2
         # Loss function
         with tf.name_scope("loss"):
-            if(self.config.loss_type == "MSE"):
-                self.loss_function = tf.reduce_mean(tf.losses.mean_squared_error(labels=self.y, predictions=outputLayer))
-            elif(self.config.loss_type == "HUBER"):
-                self.loss_function = tf.reduce_mean(tf.losses.huber_loss(labels=self.y,predictions = outputLayer))
-            elif(self.config.loss_type == "SIMSE"):
+            if (self.config.loss_type == "MSE"):
+                self.loss_function = tf.reduce_mean(
+                    tf.losses.mean_squared_error(labels=self.y, predictions=outputLayer))
+            elif (self.config.loss_type == "HUBER"):
+                self.loss_function = tf.reduce_mean(tf.losses.huber_loss(labels=self.y, predictions=outputLayer))
+            elif (self.config.loss_type == "SIMSE"):
                 # Scale invariant Mean Square Error
                 self.lamda = tf.constant(self.config.lamda)
-                #self.lamda = tf.multiply(self.lamda,tf.cast(tf.size(outputLayer),tf.float32)) 
-                self.loss_function = tf.subtract(tf.reduce_mean(tf.square(tf.subtract(tf.log1p(self.y),tf.log1p(outputLayer)))),
-                   								 tf.multiply(self.lamda,
-                                                 tf.square(tf.reduce_mean(tf.subtract(tf.log1p(self.y),tf.log1p(outputLayer))))))
+                # self.lamda = tf.multiply(self.lamda,tf.cast(tf.size(outputLayer),tf.float32))
+                self.loss_function = tf.subtract(
+                    tf.reduce_mean(tf.square(tf.subtract(tf.log1p(self.y), tf.log1p(outputLayer)))),
+                    tf.multiply(self.lamda,
+                                tf.square(tf.reduce_mean(tf.subtract(tf.log1p(self.y), tf.log1p(outputLayer))))))
             self.train_step = tf.train.AdamOptimizer(self.config.learning_rate).minimize(self.loss_function,
                                                                                          global_step=self.global_step_tensor)
             ## TODO Need to be changed
@@ -42,7 +44,6 @@ class MiniModel(BaseModel):
         # self.accuracy = 0
         # Change the value of this parameter in case of changing architecture
         self.output = outputLayer
-
 
     def init_saver(self):
         # here you initialize the tensorflow saver that will be used in saving the checkpoints.
