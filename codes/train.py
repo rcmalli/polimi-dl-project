@@ -9,7 +9,7 @@ from utils.config import process_config
 from utils.dirs import create_dirs
 from utils.logger import Logger
 from utils.utils import get_args
-
+from tensorflow.python import debug as tf_debug
 
 def main():
     # capture the config path from the run arguments
@@ -26,6 +26,7 @@ def main():
     create_dirs([config.summary_dir, config.checkpoint_dir])
     # create tensorflow session
     sess = tf.Session()
+    sess = tf_debug.TensorBoardDebugWrapperSession(sess, 'localhost:6064')
     # create your data generator
     data = NYUDataLoader(config)
     # create an instance of the model you want
