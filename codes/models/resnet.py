@@ -169,10 +169,13 @@ class Resnet50Model(BaseModel):
                                 tf.square(tf.reduce_mean(tf.subtract(tf.log1p(self.y), tf.log1p(self.output_layer))))))
 
             # this list should include only upscale part
-            non_resnet_vars = list(
-                set(tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)) - self.model_weights_tensors)
+            if self.config.train_resnet:
+                train_vars = list(set(tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)))
+            else:
+                train_vars = list(
+                    set(tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)) - self.model_weights_tensors)
             self.train_step = tf.train.AdamOptimizer(self.config.learning_rate).minimize(self.loss_function,
-                                                                                         var_list=non_resnet_vars,
+                                                                                         var_list=train_vars,
                                                                                          global_step=self.global_step_tensor)
             ## TODO Need to be changed
             correct_prediction = tf.equal(tf.argmax(self.output_layer, 1), tf.argmax(self.y, 1))
