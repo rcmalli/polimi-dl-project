@@ -10,8 +10,9 @@ class DepthTrainer(BaseTrain):
     def train_epoch(self):
         # This function implements the operation in one epoch
 
-        self.sess.run(self.data.train_init_op)
-        # Create an iterator
+        self.sess.run(self.data.iterator.initializer, feed_dict={self.data.image: self.data.train_images,
+                                                                 self.data.depth: self.data.train_depths})
+
         train_loop = tqdm(range(self.config.train_num_iter_per_epoch))
         lose_list = []
         acc_list = []
@@ -29,7 +30,8 @@ class DepthTrainer(BaseTrain):
 
         #test loop
 
-        self.sess.run(self.data.test_init_op)
+        self.sess.run(self.data.iterator.initializer, feed_dict={self.data.image: self.data.test_images,
+                                                                 self.data.depth: self.data.test_depths})
 
         test_loop = tqdm(range(self.config.test_num_iter_per_epoch))
         lose_list = []

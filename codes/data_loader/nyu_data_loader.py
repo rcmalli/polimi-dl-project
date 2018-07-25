@@ -25,47 +25,28 @@ class NYUDataLoader:
         print("image array: ",data['image'].shape)
         print("depth array: ", data['depth'].shape)
 
-        train_images, test_images, train_depths, test_depths = train_test_split(
+        self.train_images, self.test_images, self.train_depths, self.test_depths = train_test_split(
             data['image'], data['depth'], test_size=self.config.test_split, random_state=42, shuffle=True)
 
-        self.config.test_num_iter_per_epoch = int(test_images.shape[0]/ self.config.batch_size)
-        self.config.train_num_iter_per_epoch = int(train_images.shape[0]/ self.config.batch_size)
+        self.config.test_num_iter_per_epoch = int(self.test_images.shape[0]/ self.config.batch_size)
+        self.config.train_num_iter_per_epoch = int(self.train_images.shape[0]/ self.config.batch_size)
 
+        self.image = tf.placeholder(tf.float32, shape=[None] + list(self.train_images.shape[1:]))
+        self.depth = tf.placeholder(tf.float32, shape=[None] + list(self.train_depths.shape[1:]))
 
+        self.dataset = tf.data.Dataset.from_tensor_slices((self.image, self.depth))
 
-
-        with tf.name_scope('train_dataset'):
-            self.train_data = tf.data.Dataset.from_tensor_slices(
-                (train_images, train_depths))
-
-
-
-            self.train_data = self.train_data.map(self._resize_data, num_parallel_calls=self.num_threads).prefetch(30)
-            if self.augment:
-                self.train_data = self.train_data.map(self._flip_left_right,
-                                num_parallel_calls=self.num_threads).prefetch(30)
-            self.train_data = self.train_data.map(self._normalize_data,
-                            num_parallel_calls=self.num_threads).prefetch(30)
-            self.train_data = self.train_data.shuffle(30)
-            self.train_data = self.train_data.batch(self.batch_size)
-
-        with tf.name_scope('test_dataset'):
-            self.test_data = tf.data.Dataset.from_tensor_slices(
-                (test_images, test_depths))
-
-            self.test_data = self.test_data.map(self._resize_data, num_parallel_calls=self.num_threads).prefetch(30)
-            self.test_data = self.test_data.map(self._normalize_data,
-                            num_parallel_calls=self.num_threads).prefetch(30)
-            self.test_data = self.test_data.shuffle(30)
-            self.test_data = self.test_data.batch(self.batch_size)
+        self.dataset = self.dataset.map(self._resize_data, num_parallel_calls=self.num_threads).prefetch(30)
+        if self.augment:
+            self.dataset = self.dataset.map(self._flip_left_right,
+                                                  num_parallel_calls=self.num_threads).prefetch(30)
+        self.dataset = self.dataset.map(self._normalize_data,
+                                              num_parallel_calls=self.num_threads).prefetch(30)
+        self.dataset = self.dataset.shuffle(30)
+        self.dataset =self.dataset.batch(self.batch_size)
 
         # Create iterator
-        self.iterator = tf.data.Iterator.from_structure(
-            self.train_data.output_types, self.train_data.output_shapes)
-
-        # Data set init. op
-        self.train_init_op = self.iterator.make_initializer(self.train_data)
-        self.test_init_op = self.iterator.make_initializer(self.test_data)
+        self.iterator = self.dataset.make_initializable_iterator()
         self.x, self.y = self.iterator.get_next()
 
 
