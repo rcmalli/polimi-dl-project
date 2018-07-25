@@ -3,6 +3,7 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import numpy as np
 
+
 def get_incoming_shape(incoming):
     """ Returns the incoming data shape """
     if isinstance(incoming, tf.Tensor):
@@ -21,80 +22,77 @@ def interleave(tensors, axis):
 
 
 def unpool_as_conv(size, input_data, id, stride=1, ReLU=False, BN=True, is_training=False):
-    # Model upconvolutions (unpooling + convolution) as interleaving feature
-    # maps of four convolutions (A,B,C,D). Building block for up-projections.
+    with tf.variable_scope('unpool_' + id):
+        # Model upconvolutions (unpooling + convolution) as interleaving feature
+        # maps of four convolutions (A,B,C,D). Building block for up-projections.
 
-    layerName = "layer%s_ConvA" % (id)
-    outputA = tf.layers.conv2d(input_data, size[3], 3, strides=(stride, stride),
-                               activation=None, name=layerName, padding='same')
+        layerName = "layer%s_ConvA" % (id)
+        outputA = tf.layers.conv2d(input_data, size[3], 3, strides=(stride, stride),
+                                       activation=None, name=layerName, padding='same')
+        layerName = "layer%s_ConvB" % (id)
+        padded_input_B = tf.pad(input_data, [[0, 0], [1, 0], [1, 1], [0, 0]], "CONSTANT")
+        outputB = tf.layers.conv2d(padded_input_B, size[3], (2, 3), strides=(stride, stride),
+                                       activation=None, name=layerName, padding='valid')
+        layerName = "layer%s_ConvC" % (id)
+        padded_input_C = tf.pad(input_data, [[0, 0], [1, 1], [1, 0], [0, 0]], "CONSTANT")
+        outputC = tf.layers.conv2d(padded_input_C, size[3], (3, 2), strides=(stride, stride),
+                                       activation=None, name=layerName, padding='valid')
+        layerName = "layer%s_ConvD" % (id)
+        padded_input_D = tf.pad(input_data, [[0, 0], [1, 0], [1, 0], [0, 0]], "CONSTANT")
+        outputD = tf.layers.conv2d(padded_input_D, size[3], (2, 2), strides=(stride, stride),
+                                       activation=None, name=layerName, padding='valid')
 
-    layerName = "layer%s_ConvB" % (id)
-    padded_input_B = tf.pad(input_data, [[0, 0], [1, 0], [1, 1], [0, 0]], "CONSTANT")
-    outputB = tf.layers.conv2d(padded_input_B, size[3], (2,3), strides=(stride, stride),
-                               activation=None, name=layerName, padding='valid')
+        # interleave_name = "interleave_%s" % (id)
+        # with tf.name_scope(interleave_name):
+        # Interleaving elements of the four feature maps
+        # --------------------------------------------------
+        left = interleave([outputA, outputB], axis=1)  # columns
+        right = interleave([outputC, outputD], axis=1)  # columns
+        Y = interleave([left, right], axis=2)  # rows
 
-    layerName = "layer%s_ConvC" % (id)
-    padded_input_C = tf.pad(input_data, [[0, 0], [1, 1], [1, 0], [0, 0]], "CONSTANT")
-    outputC = tf.layers.conv2d(padded_input_C, size[3], (3, 2), strides=(stride, stride),
-                               activation=None, name=layerName, padding='valid')
+        if BN:
+            # print("Check batchnorm implementation")
+            layerName = "layer%s_BN" % (id)
+            Y = tf.layers.batch_normalization(Y, training=is_training, name=layerName)
 
-    layerName = "layer%s_ConvD" % (id)
-    padded_input_D = tf.pad(input_data, [[0, 0], [1, 0], [1, 0], [0, 0]], "CONSTANT")
-    outputD = tf.layers.conv2d(padded_input_D, size[3], (2, 2), strides=(stride, stride),
-                               activation=None, name=layerName, padding='valid')
+        if ReLU:
+            Y = tf.nn.relu(Y, name=layerName)
 
-    # Interleaving elements of the four feature maps
-    # --------------------------------------------------
-    left = interleave([outputA, outputB], axis=1)  # columns
-    right = interleave([outputC, outputD], axis=1)  # columns
-    Y = interleave([left, right], axis=2)  # rows
-
-    if BN:
-        #print("Check batchnorm implementation")
-        layerName = "layer%s_BN" % (id)
-        Y = tf.layers.batch_normalization(Y, training=is_training, name=layerName)
-
-    if ReLU:
-        Y = tf.nn.relu(Y, name=layerName)
-
-    return Y
+        return Y
 
 
 def up_project(input_data, size, id, stride=1, BN=True, is_training=False):
-
     # Create residual upsampling layer (UpProjection)
 
+    with tf.variable_scope('up_project_' + id):
+        # Branch 1
+        id_br1 = "%s_br1" % (id)
 
-    # Branch 1
-    id_br1 = "%s_br1" % (id)
+        # Interleaving Convs of 1st branch
+        branch1_output = unpool_as_conv(size, input_data, id_br1, stride, ReLU=True, BN=BN, is_training=is_training)
 
-    # Interleaving Convs of 1st branch
-    branch1_output = unpool_as_conv(size, input_data, id_br1, stride, ReLU=True, BN=True, is_training= is_training)
+        layerName = "layer%s_Conv" % (id)
+        # Convolution following the upProjection on the 1st branch
+        branch1_output = tf.layers.conv2d(branch1_output, size[3], (size[0], size[1]), strides=(stride, stride),
+                                          activation=None, name=layerName, padding='same')
 
-    layerName = "layer%s_Conv" % (id)
-    # Convolution following the upProjection on the 1st branch
-    branch1_output = tf.layers.conv2d(branch1_output, size[3], (size[0], size[1]), strides=(stride, stride),
-                               activation=None, name=layerName, padding='same')
+        if BN:
+            layerName = "layer%s_BN" % (id)
+            branch1_output = tf.layers.batch_normalization(branch1_output, training=is_training, name=layerName)
 
-    if BN:
-        layerName = "layer%s_BN" % (id)
-        branch1_output = tf.layers.batch_normalization(branch1_output, training=is_training, name=layerName)
+        # Branch 2
+        id_br2 = "%s_br2" % (id)
+        # Interleaving convolutions and output of 2nd branch
+        branch2_output = unpool_as_conv(size, input_data, id_br2, stride, ReLU=False, BN=BN, is_training=True)
 
+        # sum branches
+        layerName = "layer%s_Sum" % (id)
+        output = tf.add_n([branch1_output, branch2_output], name=layerName)
+        # ReLU
+        layerName = "layer%s_ReLU" % (id)
+        output = tf.nn.relu(output, name=layerName)
 
-
-    # Branch 2
-    id_br2 = "%s_br2" % (id)
-    # Interleaving convolutions and output of 2nd branch
-    branch2_output = unpool_as_conv(size, input_data, id_br2, stride, ReLU=False, is_training=True)
-
-    # sum branches
-    layerName = "layer%s_Sum" % (id)
-    output = tf.add_n([branch1_output, branch2_output], name=layerName)
-    # ReLU
-    layerName = "layer%s_ReLU" % (id)
-    output = tf.nn.relu(output, name=layerName)
-
-    return output
+        return output
 
 
 class Resnet50Model(BaseModel):
@@ -122,10 +120,11 @@ class Resnet50Model(BaseModel):
             # up projection path
             with tf.variable_scope('up_projection'):
                 # add more layers starting from self.resnet_output
-                print("TODO: check upscale part")
-                x = tf.layers.conv2d(self.resnet_output, 1024, 1, strides=(1, 1), activation=tf.nn.relu, name='layer1', padding='same')
+                # print("TODO: check upscale part")
+                x = tf.layers.conv2d(self.resnet_output, 1024, 1, strides=(1, 1), activation=tf.nn.relu, name='layer1',
+                                     padding='same')
                 x = tf.layers.batch_normalization(x, training=self.is_training, name='layer1_BN')
-                x = up_project(x, [3, 3, 1024, 512], id = '2x', stride = 1, BN=True, is_training=self.is_training)
+                x = up_project(x, [3, 3, 1024, 512], id='2x', stride=1, BN=True, is_training=self.is_training)
                 x = up_project(x, [3, 3, 512, 256], id = '4x', stride=1, BN=True, is_training=self.is_training)
                 x = up_project(x, [3, 3, 256, 128], id = '8x', stride=1, BN=True, is_training=self.is_training)
                 x = up_project(x, [3, 3, 128, 64], id = '16x', stride=1, BN=True, is_training=self.is_training)
@@ -134,6 +133,11 @@ class Resnet50Model(BaseModel):
                 # What should be the output activation current is None
                 self.output_layer = x
 
+        # Uncomment this for debugging the graph
+        # train_writer = tf.summary.FileWriter(self.config.checkpoint_dir)
+        # train_writer.add_graph(self.session.graph)
+
+        # put breakpoint at below line and open tensorboard to see graph.
 
         # variables that should be excluded in training
         self.resnet_weights = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='DepthModel/resnet')

@@ -26,7 +26,7 @@ def _flip_left_right(image, depthmap):
 def _normalize_data(image, depthmap):
     """Normalize image and depth_map within range 0-1."""
     image = tf.cast(image, tf.float32)
-    #image = image / 255.0
+    image = image / 255.0
 
     depthmap = tf.cast(depthmap, tf.float32)
     #depthmap = depthmap / 255.0
