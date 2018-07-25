@@ -27,7 +27,7 @@ for i in tqdm(range(len(image_paths))):
 data['image'] = np.array(data['image'])[:20]
 data['depth'] = np.array(data['depth'])[:20]
 
-with open('./Data/Fake/nyudataset.pickle', 'wb') as handle:
+with open('./Data/nyudataset.pickle', 'wb') as handle:
     pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
