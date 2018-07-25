@@ -4,112 +4,96 @@ import tensorflow as tf
 import random
 import os
 import pickle
+from sklearn.model_selection import train_test_split
 
 
 
-def _resize_data(image, depthmap):
-    """Resizes images to smaller dimensions."""
-    image = tf.image.resize_images(image, [224, 224])
-    depthmap = tf.image.resize_images(depthmap, [112, 112])
-
-    return image, depthmap
-
-def _flip_left_right(image, depthmap):
-    """Randomly flips image and depth_map left or right in accord."""
-    seed = random.random()
-    image = tf.image.random_flip_left_right(image, seed=seed)
-    depth_map = tf.image.random_flip_left_right(depthmap, seed=seed)
-
-    return image, depth_map
-
-
-def _normalize_data(image, depthmap):
-    """Normalize image and depth_map within range 0-1."""
-    image = tf.cast(image, tf.float32)
-    image = image / 255.0
-
-    depthmap = tf.cast(depthmap, tf.float32)
-    #depthmap = depthmap / 255.0
-    #depthmap = tf.cast(depthmap, tf.int32)
-
-    return image, depthmap
-
-
-def _parse_depthmap(image_path, depthmap_path):
-
-    fp = open(depthmap_path, 'rb')
-    depthmap = pickle.load(fp)
-    # depthmap = np.load(depthmap_path)
-    depthmap = depthmap.astype(np.float32)
-    depthmap = np.expand_dims(depthmap, axis=-1)
-    # fp.close()
-
-    return image_path, depthmap
-
-
-def _parse_image(image_path, depthmap):
-
-    """Reads image and depth_map files"""
-    image_content = tf.read_file(image_path)
-    image = tf.image.decode_png(image_content, channels=3)
-
-    return image, depthmap
 
 
 class NYUDataLoader:
     def __init__(self, config):
         self.config = config
         print("Loading the data")
-        image_folder = self.config.image_folder
-        depthmap_folder = self.config.depthmap_folder
+        data_folder = self.config.data_folder
         self.augment = self.config.augment
         self.batch_size = self.config.batch_size
         self.num_threads = self.config.num_threads
 
-        self.image_paths = sorted([os.path.join(image_folder, x) for x in os.listdir(image_folder) if x.endswith('.jpg')])
-        self.depthmap_paths = sorted([os.path.join(depthmap_folder, x) for x in os.listdir(depthmap_folder) if x.endswith('.pkl')])
+        with open(data_folder+'/nyudataset.pickle', 'rb') as handle:
+            data = pickle.load(handle)
 
-        images_name_tensor = tf.constant(self.image_paths)
-        mask_name_tensor = tf.constant(self.depthmap_paths)
+        print("image array: ",data['image'].shape)
+        print("depth array: ", data['depth'].shape)
 
-        # Create dataset out of the 2 files:
-        self.data = tf.data.Dataset.from_tensor_slices(
-            (images_name_tensor, mask_name_tensor))
+        train_images, test_images, train_depths, test_depths = train_test_split(
+            data['image'], data['depth'], test_size=self.config.test_split, random_state=42, shuffle=True)
 
-        self.data = self.data.map(
-            lambda image_path, depthmap_path: tuple(tf.py_func(
-                _parse_depthmap, [image_path, depthmap_path], [image_path.dtype, tf.float32])))
+        self.config.test_num_iter_per_epoch = int(test_images.shape[0]/ self.config.batch_size)
+        self.config.train_num_iter_per_epoch = int(train_images.shape[0]/ self.config.batch_size)
 
-        # Parse images
-        self.data = self.data.map(
-            _parse_image, num_parallel_calls=self.num_threads).prefetch(30)
 
-        # If augmentation is to be applied
-        if self.augment:
-            self.data = self.data.map(_flip_left_right,
+
+
+        with tf.name_scope('train_dataset'):
+            self.train_data = tf.data.Dataset.from_tensor_slices(
+                (train_images, train_depths))
+
+
+
+            self.train_data = self.train_data.map(self._resize_data, num_parallel_calls=self.num_threads).prefetch(30)
+            if self.augment:
+                self.train_data = self.train_data.map(self._flip_left_right,
+                                num_parallel_calls=self.num_threads).prefetch(30)
+            self.train_data = self.train_data.map(self._normalize_data,
                             num_parallel_calls=self.num_threads).prefetch(30)
+            self.train_data = self.train_data.shuffle(30)
+            self.train_data = self.train_data.batch(self.batch_size)
 
-        # Batch the data
-        self.data = self.data.batch(self.batch_size)
+        with tf.name_scope('test_dataset'):
+            self.test_data = tf.data.Dataset.from_tensor_slices(
+                (test_images, test_depths))
 
-        # Resize to smaller dims for speed
-        self.data = self.data.map(_resize_data, num_parallel_calls=self.num_threads).prefetch(30)
-
-        # Normalize
-        self.data = self.data.map(_normalize_data,
-                        num_parallel_calls=self.num_threads).prefetch(30)
-
-        self.data = self.data.shuffle(30)
-
-        # shapes = [tf.TensorShape([224, 224, 3]), tf.TensorShape([224, 224, 1])]
-        #
-        # result = self.data.apply(tf.contrib.data.assert_element_shape(shapes))
+            self.test_data = self.test_data.map(self._resize_data, num_parallel_calls=self.num_threads).prefetch(30)
+            self.test_data = self.test_data.map(self._normalize_data,
+                            num_parallel_calls=self.num_threads).prefetch(30)
+            self.test_data = self.test_data.shuffle(30)
+            self.test_data = self.test_data.batch(self.batch_size)
 
         # Create iterator
         self.iterator = tf.data.Iterator.from_structure(
-            self.data.output_types, self.data.output_shapes)
+            self.train_data.output_types, self.train_data.output_shapes)
 
         # Data set init. op
-        self.iter_init_op = self.iterator.make_initializer(self.data)
+        self.train_init_op = self.iterator.make_initializer(self.train_data)
+        self.test_init_op = self.iterator.make_initializer(self.test_data)
         self.x, self.y = self.iterator.get_next()
+
+
+
+    def _resize_data(self, image, depthmap):
+        """Resizes images to smaller dimensions."""
+        image = tf.image.resize_images(image, self.config.input_size[:2])
+        depthmap = tf.image.resize_images(depthmap, self.config.output_size[:2])
+
+        return image, depthmap
+
+    def _flip_left_right(self, image, depthmap):
+        """Randomly flips image and depth_map left or right in accord."""
+        seed = random.random()
+        image = tf.image.random_flip_left_right(image, seed=seed)
+        depth_map = tf.image.random_flip_left_right(depthmap, seed=seed)
+
+        return image, depth_map
+
+    def _normalize_data(self, image, depthmap):
+        """Normalize image and depth_map within range 0-1."""
+        image = tf.cast(image, tf.float32)
+        image = image / 255.0
+
+        depthmap = tf.cast(depthmap, tf.float32)
+        # depthmap = depthmap / 255.0
+        # depthmap = tf.cast(depthmap, tf.int32)
+
+        return image, depthmap
+
 

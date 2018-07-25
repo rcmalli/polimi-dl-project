@@ -144,6 +144,14 @@ class Resnet50Model(BaseModel):
 
         self.model_weights_tensors = set(self.resnet_weights)
 
+
+
+        #Visualization
+
+        # with tf.name_scope('Visualize_Output'):
+        #
+        #     self.show_output = tf.summary.image("Visualize_kernels", self.output_layer, max_outputs=1)
+
         # Loss function
         with tf.name_scope("loss_"+self.config.loss_type):
             if self.config.loss_type == "MSE":

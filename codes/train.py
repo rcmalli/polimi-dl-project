@@ -3,7 +3,7 @@ import tensorflow as tf
 from data_loader.nyu_data_loader import NYUDataLoader
 
 from models.mini_model import MiniModel
-from models.resnet_fast import Resnet50Model
+from models.resnet import Resnet50Model
 from trainers.depth_estimator_trainer import DepthTrainer
 from utils.config import process_config
 from utils.dirs import create_dirs
