@@ -24,8 +24,8 @@ for i in tqdm(range(len(image_paths))):
     image = imread(image_paths[i])
     data['image'].append(image)
 
-data['image'] = np.array(data['image'])[:20]
-data['depth'] = np.array(data['depth'])[:20]
+data['image'] = np.array(data['image'])
+data['depth'] = np.array(data['depth'])
 
 with open('./Data/nyudataset.pickle', 'wb') as handle:
     pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
