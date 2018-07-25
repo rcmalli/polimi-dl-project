@@ -129,8 +129,8 @@ class Resnet50Model(BaseModel):
                 x = up_project(x, [3, 3, 256, 128], id = '8x', stride=1, BN=True, is_training=self.is_training)
                 x = up_project(x, [3, 3, 128, 64], id = '16x', stride=1, BN=True, is_training=self.is_training)
                 x = tf.layers.dropout(x, rate=0.1, name='drop', training=self.is_training)
-                x = tf.layers.conv2d(x, 1, 3, strides=(1, 1), activation=None, name='ConvPred', padding='same')
-                # What should be the output activation current is None
+                x = tf.layers.conv2d(x, 1, 3, strides=(1, 1), activation=tf.nn.relu, name='ConvPred', padding='same')
+                # What should be the output activation current is Relu
                 self.output_layer = x
 
         # Uncomment this for debugging the graph
