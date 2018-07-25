@@ -1,7 +1,7 @@
 {
 	"image_folder":"./Data/Fake/Image",
 	"depthmap_folder":"./Data/Fake/Depth",
-	"exp_name": "NYU-resnet",
+	"exp_name": "NYU-resnet-fake",
 	"num_epochs": 100,
 	"loss_type":"MSE",
 	"lamda":0.5,

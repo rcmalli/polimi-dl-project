@@ -145,7 +145,7 @@ class Resnet50Model(BaseModel):
         self.model_weights_tensors = set(self.resnet_weights)
 
         # Loss function
-        with tf.name_scope("loss"):
+        with tf.name_scope("loss_"+self.config.loss_type):
             if self.config.loss_type == "MSE":
                 self.loss_function = tf.reduce_mean(
                     tf.losses.mean_squared_error(labels=self.y, predictions=self.output_layer))
