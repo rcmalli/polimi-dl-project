@@ -26,7 +26,9 @@ def main():
     create_dirs([config.summary_dir, config.checkpoint_dir])
     # create tensorflow session
     sess = tf.Session()
-    sess = tf_debug.TensorBoardDebugWrapperSession(sess, 'localhost:6064')
+    if config.tensorboard_debug:
+        sess = tf_debug.TensorBoardDebugWrapperSession(sess, 'localhost:6064',
+                                                       send_traceback_and_source_code=False)
     # create your data generator
     data = NYUDataLoader(config)
     # create an instance of the model you want

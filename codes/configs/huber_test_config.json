@@ -6,6 +6,7 @@
 	"lamda":0.5,
 	"num_threads": 5,
   	"train_resnet": true,
+	"tensorboard_debug": false,
 	"augment": true,
 	"test_split": 0.1,
 	"learning_rate": 0.001,
