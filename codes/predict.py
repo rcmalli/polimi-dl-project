@@ -53,7 +53,7 @@ def main():
     config = process_config(args.config)
 
     pred = predict(args.input, config)
-    plt.imsave('lena_depth.jpeg', pred)
+    plt.imsave('predict_depth.jpeg', pred)
     #	plt.imshow(np.asarray(pred),cmap='gray')
     #	plt.show()
     os._exit(0)
