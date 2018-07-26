@@ -1,4 +1,4 @@
-from data import load_dataset_file, tf_data_generator, split_dataset, calculate_num_iter
+from data import load_pair_paths, tf_data_generator, split_dataset, calculate_num_iter
 from model import depth_model
 from loss import select_loss
 from dirs import create_dirs
@@ -32,18 +32,18 @@ def train():
     create_dirs([config.model_dir, config.tensorboard_dir])
 
     # load dataset file
-    dataset = load_dataset_file(config)
+    dataset = load_pair_paths(config)
 
     # split dataset train and test
-    train_images, test_images, train_depths, test_depths = split_dataset(config, dataset)
+    train_pairs, test_pairs = split_dataset(config, dataset)
 
     # Calculate steps for each epoch
-    train_num_steps = calculate_num_iter(config, train_images)
-    test_num_steps = calculate_num_iter(config, test_images)
+    train_num_steps = calculate_num_iter(config, train_pairs)
+    test_num_steps = calculate_num_iter(config, test_pairs)
 
     # Create train and test data generators
-    train_gen = tf_data_generator(config, train_images, train_depths, is_training=True)
-    test_gen = tf_data_generator(config, test_images, test_depths, is_training=False)
+    train_gen = tf_data_generator(config, train_pairs, is_training=True)
+    test_gen = tf_data_generator(config,test_pairs, is_training=False)
 
 
     # Create the model
