@@ -2,7 +2,7 @@
 	"data_folder":"../data/pairs",
 	"exp_name": "nyu-resnet-simse",
 	"num_epochs": 100,
-	"loss_type":"MSE",
+	"loss_type":"SIMSE",
 	"lamda":0.5,
 	"num_threads": 5,
   	"train_resnet": false,

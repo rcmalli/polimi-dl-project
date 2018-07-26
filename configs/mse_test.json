@@ -1,7 +1,7 @@
 {
 	"data_folder":"../data/pairs",
 	"exp_name": "nyu-resnet-mse",
-	"num_epochs": 100,
+	"num_epochs": 150,
 	"loss_type":"MSE",
 	"lamda":0.5,
 	"num_threads": 5,
