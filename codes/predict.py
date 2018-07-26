@@ -7,8 +7,9 @@ from utils.config import process_config
 from utils.dirs import create_dirs
 from utils.logger import Logger
 from utils.utils import get_args
+from models.resnet import Resnet50Model
 from models.mini_model import MiniModel
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 def predict(input_path,config):
 
 	img = Image.open(input_path)
@@ -19,15 +20,16 @@ def predict(input_path,config):
 
 	img = img.resize((width, height), Image.ANTIALIAS)
 	img = np.array(img)
-	
-	plt.imshow(np.asarray(img))
-	plt.show()
+	print(img.shape)
+#	plt.imshow(np.asarray(img))
+#	plt.show()
 	
 	img = np.reshape(img,[1,width,height,3])
-	
+	x = tf.constant(width)
+	y = tf.constant(height)	
 	with tf.Session() as sess:
 
-		model = MiniModel(config)
+		model = Resnet50Model(config,sess,x,y)
 		model.load(sess)
 
 		pred = sess.run(model.output, feed_dict={model.x: img})
@@ -41,8 +43,9 @@ def main():
 
 	pred = predict(args.input,config)
 
-	plt.imshow(np.asarray(pred),cmap='gray')
-	plt.show()
+	print(pred)
+#	plt.imshow(np.asarray(pred),cmap='gray')
+#	plt.show()
 	os._exit(0)
 
 if __name__ == '__main__':

@@ -12,5 +12,5 @@
 	"learning_rate": 0.0001,
 	"batch_size": 32,
 	"max_to_keep":2,
-	"input_size":[224,224,3],
+	"input_size":[224,224,3,1],
 	"output_size":[112,112,1] }

@@ -106,7 +106,7 @@ class Resnet50Model(BaseModel):
 
     def build_model(self):
         self.is_training = tf.placeholder(tf.bool)
-
+	
         # Full model scope
         with tf.variable_scope('DepthModel'):
 
