@@ -1,5 +1,5 @@
 {
-	"data_folder":"../data/fake",
+	"data_folder":"../data",
 	"exp_name": "nyu-resnet-simse",
 	"num_epochs": 100,
 	"loss_type":"MSE",
