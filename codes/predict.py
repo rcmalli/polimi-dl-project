@@ -14,16 +14,18 @@ def predict(input_path,config):
 
 	img = Image.open(input_path)
 	
-	height = config.input_size[0]
-	width = config.input_size[1]
-	channels = config.input_size[2]
+	height = config.input_size[1]
+	width = config.input_size[2]
+	channels = config.input_size[3]
 
 	img = img.resize((width, height), Image.ANTIALIAS)
-	img = np.array(img)
+	img = np.array(img,dtype=float)
+	
 #	plt.imshow(np.asarray(img))
 #	plt.show()
 	
-	img = np.reshape(img,[width,height,3,1])
+	img = np.reshape(img,[1,width,height,channels])
+	img = (img)/255
 	print(img.shape)
 	x = tf.placeholder(tf.float32, shape = config.input_size)
 	y = tf.placeholder(tf.float32, shape = config.output_size)
@@ -35,9 +37,10 @@ def predict(input_path,config):
 
 		model = Resnet50Model(config,sess,x,y)
 		model.load(sess)
-
-		pred = sess.run(model.output, feed_dict={model.x: img})
-		pred = np.reshape(pred,[pred.shape[1],pred.shape[2]])
+		update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+		with tf.control_dependencies(update_ops):
+			pred = sess.run(model.output, feed_dict={model.x: img,model.is_training: False})
+			pred = np.reshape(pred,[pred.shape[1],pred.shape[2]])
 
 	return 	pred
 
