@@ -1,0 +1,17 @@
+{
+	"data_folder":"../data/fake",
+	"exp_name": "nyu-resnet-fake",
+	"num_epochs": 100,
+	"loss_type":"MSE",
+	"lamda":0.5,
+	"num_threads": 2,
+  	"train_resnet": false,
+	"early_stop_patience": 5,
+	"reduce_lr_factor": 0.9,
+	"augment": true,
+	"test_split": 0.1,
+	"optimizer": "ADAM",
+	"learning_rate": 0.0001,
+	"batch_size": 2,
+	"input_size":[224,224,3],
+	"output_size":[112,112,1] }
