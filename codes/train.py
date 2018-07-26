@@ -26,6 +26,7 @@ def main():
     create_dirs([config.summary_dir, config.checkpoint_dir])
     # create tensorflow session
     sess = tf.Session()
+    sess.as_default()
     if config.tensorboard_debug:
         sess = tf_debug.TensorBoardDebugWrapperSession(sess, 'localhost:6064',
                                                        send_traceback_and_source_code=False)

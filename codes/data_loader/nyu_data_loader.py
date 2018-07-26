@@ -35,6 +35,7 @@ class NYUDataLoader:
         self.depth = tf.placeholder(tf.float32, shape=[None] + list(self.train_depths.shape[1:]))
 
         self.dataset = tf.data.Dataset.from_tensor_slices((self.image, self.depth))
+        self.dataset = self.dataset.shuffle(self.test_images.shape[0])
 
         self.dataset = self.dataset.map(self._resize_data, num_parallel_calls=self.num_threads).prefetch(30)
         if self.augment:
@@ -42,8 +43,8 @@ class NYUDataLoader:
                                                   num_parallel_calls=self.num_threads).prefetch(30)
         self.dataset = self.dataset.map(self._normalize_data,
                                               num_parallel_calls=self.num_threads).prefetch(30)
-        self.dataset = self.dataset.shuffle(30)
         self.dataset =self.dataset.batch(self.batch_size)
+        self.dataset = self.dataset.prefetch(4)
 
         # Create iterator
         self.iterator = self.dataset.make_initializable_iterator()

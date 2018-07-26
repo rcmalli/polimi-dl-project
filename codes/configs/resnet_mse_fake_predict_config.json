@@ -1,16 +1,16 @@
 {
-	"data_folder":"./Data/Fake",
+	"data_folder":"./Data/",
 	"exp_name": "NYU-resnet-fake",
 	"num_epochs": 100,
 	"loss_type":"MSE",
 	"lamda":0.5,
 	"num_threads": 5,
-  	"train_resnet": false,
+  	"train_resnet": true,
 	"augment": true,
   	"tensorboard_debug": false,
 	"test_split": 0.1,
 	"learning_rate": 0.0001,
-	"batch_size": 2,
+	"batch_size": 32,
 	"max_to_keep":2,
-	"input_size":[224,224,3],
-	"output_size":[112,112,1] }
+	"input_size":[1,224,224,3],
+	"output_size":[1,112,112,1] }
