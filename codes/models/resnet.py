@@ -106,7 +106,8 @@ class Resnet50Model(BaseModel):
 
     def build_model(self):
         self.is_training = tf.placeholder(tf.bool)
-	
+        print('Shape of input')
+        print(self.x.shape)
         # Full model scope
         with tf.variable_scope('DepthModel'):
 

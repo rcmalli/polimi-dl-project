@@ -20,13 +20,17 @@ def predict(input_path,config):
 
 	img = img.resize((width, height), Image.ANTIALIAS)
 	img = np.array(img)
-	print(img.shape)
 #	plt.imshow(np.asarray(img))
 #	plt.show()
 	
-	img = np.reshape(img,[1,width,height,3])
-	x = tf.constant(width)
-	y = tf.constant(height)	
+	img = np.reshape(img,[width,height,3,1])
+	print(img.shape)
+	x = tf.placeholder(tf.float32, shape = config.input_size)
+	y = tf.placeholder(tf.float32, shape = config.output_size)
+	
+
+#	x = tf.constant(width)
+#	y = tf.constant(height)	
 	with tf.Session() as sess:
 
 		model = Resnet50Model(config,sess,x,y)
