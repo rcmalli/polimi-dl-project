@@ -11,11 +11,11 @@ from tensorflow.keras.callbacks import TensorBoard, EarlyStopping, ReduceLROnPla
 
 
 def create_callbacks(config):
-    es = EarlyStopping(monitor='val_loss', patience=config.early_stop_patience)
+    #es = EarlyStopping(monitor='val_loss', patience=config.early_stop_patience)
     tb = TensorBoard(log_dir=config.tensorboard_dir, write_images=True)
     rp = ReduceLROnPlateau(monitor='val_loss', factor=config.reduce_lr_factor)
     mc = ModelCheckpoint(filepath=config.model_dir + 'best_depth_model.km', save_best_only=True)
-    return [es, tb, rp, mc]
+    return [tb, rp, mc]
 
 
 def select_optimizer(config):
