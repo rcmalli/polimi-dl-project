@@ -38,7 +38,8 @@ def tf_data_generator(config, pair_paths, is_training):
 
     def _normalize_data(image, depthmap):
         image = tf.cast(image, tf.float32)
-        image = image / 255.0
+        image = image / 127.5
+        image -= 1.
 
         depthmap = tf.cast(depthmap, tf.float32)
         # depthmap = depthmap / 255.0
