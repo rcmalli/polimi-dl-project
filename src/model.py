@@ -1,7 +1,9 @@
+from unicodedata import name
+
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Dropout, \
     ZeroPadding2D, Concatenate, Activation, Add, UpSampling2D
-from tensorflow.layers import Conv2DTranspose as DeConv
+from tensorflow.keras.layers import Conv2DTranspose as DeConv
 from tensorflow.keras.models import Model
 from loss import dummy_mse, huber, simse_create
 from tensorflow.keras.models import load_model
@@ -166,19 +168,19 @@ def depth_model_v3(config):
 
         with K.name_scope('up_project_' + id):
 
-            up = UpSampling2D((2, 2))(input)
-            branch1 = DeConv(size, padding="same", activation="relu", kernel_size=5)(up)
-            branch1 = BatchNormalization()(branch1)
-            branch1 = DeConv(size, padding="same", activation=None, kernel_size=3)(branch1)
-            branch1 = BatchNormalization()(branch1)
+            up = UpSampling2D((2, 2),name='upsample_'+id)(input)
 
+            branch1 = DeConv(size, padding="same", activation="relu", kernel_size=5, name='deconv1_b1_'+id)(up)
+            branch1 = BatchNormalization(name='bn1_b1_'+id)(branch1)
+            branch1 = DeConv(size, padding="same", activation=None, kernel_size=3, name='deconv2_b1_'+id)(branch1)
+            branch1 = BatchNormalization(name='bn2_b1_'+id)(branch1)
 
-            branch2 = DeConv(size, padding="same", activation=None, kernel_size=5)(up)
-            branch2 = BatchNormalization()(branch2)
+            branch2 = DeConv(size, padding="same", activation=None, kernel_size=5, name='deconv1_b2_'+id)(up)
+            branch2 = BatchNormalization( name='bn_out_'+id)(branch2)
 
-            out = Add()([branch1, branch2])
+            out = Add( name='add_'+id)([branch1, branch2])
 
-            out = Activation('relu')(out)
+            out = Activation('relu', name='relu_b1_'+id)(out)
 
             return out
 
@@ -206,12 +208,12 @@ def depth_model_v3(config):
         with K.name_scope('upscale'):
 
             x = DeConv(1024, (1, 1), activation=None, name='layer1', padding='same')(x)
-            x = BatchNormalization()(x)
+            x = BatchNormalization(name='layer1_bn')(x)
             x = up_project(x, 512, '2x')
             x = up_project(x, 256, '4x')
             x = up_project(x, 128, '8x')
 
-            out = DeConv(1, 3, activation='relu', padding='valid')(x)
+            out = DeConv(1, 3, activation='relu', padding='valid', name= 'deconv_output')(x)
 
         model = Model(inputs=input_tensor, outputs=out)
 
