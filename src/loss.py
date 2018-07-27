@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+from tensorflow.keras.losses import mean_squared_error, mean_absolute_error
 
 def simse_create(config):
     def simse(target, pred):
@@ -25,5 +25,7 @@ def select_loss(config):
         return huber
     elif config.loss_type == "SIMSE":
         return simse_create(config)
+    elif config.loss_type == "MAE":
+        return mean_absolute_error
     else:
-        return dummy_mse
+        return mean_squared_error

@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Dropout, \
-    ZeroPadding2D, Concatenate, Activation, Add
+    ZeroPadding2D, Concatenate, Activation, Add, UpSampling2D
+from tensorflow.layers import Conv2DTranspose as DeConv
 from tensorflow.keras.models import Model
 from loss import dummy_mse, huber, simse_create
 from tensorflow.keras.models import load_model
@@ -117,4 +118,41 @@ def load_depth_model(config):
 
     model = load_model(config.model_dir + config.model_name, custom_objects=custom_object_dict)
 
+    return model
+
+
+def depth_model_v2(config):
+
+    def resnet(input_tensor):
+
+        with K.name_scope('resnet50'):
+
+            resnet_model = tf.keras.applications.ResNet50(weights='imagenet',
+                                                          include_top=False, input_tensor=input_tensor)
+
+            if config.train_resnet:
+                for layer in resnet_model.layers[:163]:
+                    layer.trainable = False
+            else:
+                for layer in resnet_model.layers:
+                    layer.trainable = False
+
+            return resnet_model.output
+
+    input_tensor = Input(shape=(224, 224, 3))
+    x = resnet(input_tensor)
+    conv = DeConv(1024, padding="valid", activation="relu", kernel_size=3)(x)
+    conv = UpSampling2D((2, 2))(conv)
+    conv = DeConv(512, padding="valid", activation="relu", kernel_size=5)(conv)
+    conv = UpSampling2D((2, 2))(conv)
+    conv = DeConv(128, padding="valid", activation="relu", kernel_size=5)(conv)
+    conv = UpSampling2D((2, 2))(conv)
+    conv = DeConv(32, padding="valid", activation="relu", kernel_size=5)(conv)
+    conv = UpSampling2D((2, 2))(conv)
+    conv = DeConv(8, padding="valid", activation="relu", kernel_size=5)(conv)
+    conv = UpSampling2D((2, 2))(conv)
+    conv = DeConv(4, padding="valid", activation="relu", kernel_size=5)(conv)
+    conv = DeConv(1, padding="valid", activation="sigmoid", kernel_size=5)(conv)
+
+    model = Model(inputs=input_tensor, outputs=conv)
     return model
