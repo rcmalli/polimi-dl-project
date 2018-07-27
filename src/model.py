@@ -114,7 +114,7 @@ def load_depth_model(config):
     elif config.loss_type == "SIMSE":
         custom_object_dict = {'simse': simse_create}
     else:
-        custom_object_dict = {'dummy_mse': dummy_mse}
+        custom_object_dict = {}
 
     model = load_model(config.model_dir + config.model_name, custom_objects=custom_object_dict)
 
