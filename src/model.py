@@ -98,7 +98,7 @@ def depth_model(config):
         x = up_project(x, [3, 3, 256, 128], id='8x', stride=1, bn=True)
         x = up_project(x, [3, 3, 128, 64], id='16x', stride=1, bn=True)
         x = Dropout(0.2, name='drop')(x)
-        x = Conv2D(1, (3, 3), activation='relu', name='OutputConv', strides=(1, 1), padding='same')(x)
+        x = Conv2D(1, (3, 3), activation='sigmoid', name='OutputConv', strides=(1, 1), padding='same')(x)
 
         out = x
 
