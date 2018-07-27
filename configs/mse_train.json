@@ -5,7 +5,7 @@
 	"loss_type":"MSE",
 	"lamda":0.5,
 	"num_threads": 5,
-  	"train_resnet": false,
+  	"train_resnet": true,
 	"early_stop_patience": 5,
 	"reduce_lr_factor": 0.9,
 	"augment": true,

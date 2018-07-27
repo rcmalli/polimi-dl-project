@@ -1,16 +1,14 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Dropout,\
-    ZeroPadding2D, Concatenate, Activation,Add
+from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Dropout, \
+    ZeroPadding2D, Concatenate, Activation, Add
 from tensorflow.keras.models import Model
-from loss import dummy_mse
+from loss import dummy_mse, huber, simse_create
 from tensorflow.keras.models import load_model
 from keras import backend as K
 
 
 def unpool_as_conv(size, input, id, stride=1, relu=False, bn=True):
-
-
-    with K.name_scope('unpool_'+id):
+    with K.name_scope('unpool_' + id):
 
         layerName = "layer%s_ConvA" % (id)
 
@@ -18,20 +16,22 @@ def unpool_as_conv(size, input, id, stride=1, relu=False, bn=True):
 
         layerName = "layer%s_ConvB" % (id)
         outB = ZeroPadding2D(padding=((1, 0), (1, 1)))(input)
-        outB = Conv2D(size[3], (2, 3), activation='relu', name=layerName, strides=(stride, stride), padding='valid')(outB)
+        outB = Conv2D(size[3], (2, 3), activation='relu', name=layerName, strides=(stride, stride), padding='valid')(
+            outB)
 
         layerName = "layer%s_ConvC" % (id)
 
-        outC =  ZeroPadding2D(padding=((1, 1), (1, 0)))(input)
-        outC = Conv2D(size[3], (3, 2), activation='relu', name=layerName, strides=(stride, stride), padding='valid')(outC)
+        outC = ZeroPadding2D(padding=((1, 1), (1, 0)))(input)
+        outC = Conv2D(size[3], (3, 2), activation='relu', name=layerName, strides=(stride, stride), padding='valid')(
+            outC)
 
         layerName = "layer%s_ConvD" % (id)
 
-        outD =  ZeroPadding2D(padding=((1, 0), (1, 0)))(input)
-        outD = Conv2D(size[3], (2, 2), activation='relu', name=layerName, strides=(stride, stride), padding='valid')(outD)
+        outD = ZeroPadding2D(padding=((1, 0), (1, 0)))(input)
+        outD = Conv2D(size[3], (2, 2), activation='relu', name=layerName, strides=(stride, stride), padding='valid')(
+            outD)
 
-
-        left = Concatenate(axis=1)([outA,outB])
+        left = Concatenate(axis=1)([outA, outB])
         right = Concatenate(axis=1)([outC, outD])
         out = Concatenate(axis=2)([left, right])
 
@@ -46,9 +46,7 @@ def unpool_as_conv(size, input, id, stride=1, relu=False, bn=True):
 
 
 def up_project(input, size, id, stride=1, bn=True):
-
     with K.name_scope('up_project_' + id):
-
         id_br1 = "%s_br1" % (id)
         branch1_output = unpool_as_conv(size, input, id_br1, stride, relu=True, bn=bn)
         layerName = "layer%s_Conv" % (id)
@@ -63,22 +61,15 @@ def up_project(input, size, id, stride=1, bn=True):
         branch2_output = unpool_as_conv(size, input, id_br2, stride, relu=True, bn=bn)
 
         layerName = "layer%s_Sum" % (id)
-        out = Add(name=layerName)([branch1_output,branch2_output])
+        out = Add(name=layerName)([branch1_output, branch2_output])
 
         layerName = "layer%s_ReLU" % (id)
         out = Activation('relu', name=layerName)(out)
 
-
         return out
 
 
-
-
-
-
-
 def depth_model(config):
-
     def resnet(input_tensor):
 
         with K.name_scope('resnet50'):
@@ -113,12 +104,17 @@ def depth_model(config):
 
     model = Model(inputs=input_tensor, outputs=out, )
 
-
     return model
 
 
 def load_depth_model(config):
+    if config.loss_type == "HUBER":
+        custom_object_dict = {'huber': huber}
+    elif config.loss_type == "SIMSE":
+        custom_object_dict = {'simse': simse_create}
+    else:
+        custom_object_dict = {'dummy_mse': dummy_mse}
 
-    model = load_model(config.model_dir + 'best_depth_model.km', custom_objects={'dummy_mse': dummy_mse})
+    model = load_model(config.model_dir + config.model.name, custom_objects=custom_object_dict)
 
     return model

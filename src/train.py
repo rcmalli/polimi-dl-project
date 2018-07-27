@@ -14,7 +14,8 @@ def create_callbacks(config):
     #es = EarlyStopping(monitor='val_loss', patience=config.early_stop_patience)
     tb = TensorBoard(log_dir=config.tensorboard_dir, write_images=True)
     rp = ReduceLROnPlateau(monitor='val_loss', factor=config.reduce_lr_factor,verbose=1, min_lr=0.0000001)
-    mc = ModelCheckpoint(filepath=config.model_dir + 'best_depth_model.km', save_best_only=True, verbose=1)
+    mc = ModelCheckpoint(filepath=config.model_dir + 'model-{epoch:02d}-{val_loss:.2f}.km',
+                         period=5, verbose=1)
     return [tb, rp, mc]
 
 
