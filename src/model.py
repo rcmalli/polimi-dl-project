@@ -115,6 +115,6 @@ def load_depth_model(config):
     else:
         custom_object_dict = {'dummy_mse': dummy_mse}
 
-    model = load_model(config.model_dir + config.model.name, custom_objects=custom_object_dict)
+    model = load_model(config.model_dir + config.model_name, custom_objects=custom_object_dict)
 
     return model
