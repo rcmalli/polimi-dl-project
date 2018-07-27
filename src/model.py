@@ -167,8 +167,13 @@ def depth_model_v3(config):
 
             up = UpSampling2D((2, 2))(input)
             branch1 = DeConv(size, padding="same", activation="relu", kernel_size=5)(up)
+            branch1 = BatchNormalization()(branch1)
             branch1 = DeConv(size, padding="same", activation=None, kernel_size=3)(branch1)
+            branch1 = BatchNormalization()(branch1)
+
+
             branch2 = DeConv(size, padding="same", activation=None, kernel_size=5)(up)
+            branch2 = BatchNormalization()(branch2)
 
             out = Add()([branch1, branch2])
 
@@ -195,8 +200,8 @@ def depth_model_v3(config):
     input_tensor = Input(shape=config.input_size)
     x = resnet(input_tensor)
 
-    x = DeConv(1024, (1, 1), activation='relu', name='layer1', padding='same')(x)
-    x = BatchNormalization(name='layer1_bn')(x)
+    x = DeConv(1024, (1, 1), activation=None, name='layer1', padding='same')(x)
+    x = BatchNormalization()(x)
     x = up_project(x, 512, '2x')
     x = up_project(x, 256, '4x')
     x = up_project(x, 128, '8x')
