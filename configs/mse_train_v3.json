@@ -15,4 +15,4 @@
 	"learning_rate": 0.0001,
 	"batch_size": 32,
 	"input_size":[304,228,3],
-	"output_size":[78,54,1] }
+	"output_size":[82,58,1] }
