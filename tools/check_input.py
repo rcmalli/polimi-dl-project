@@ -181,7 +181,7 @@ if __name__ == '__main__':
 
         # Confirming everything is working by visualizing
         plt.figure('augmented image')
-        plt.imshow(aug_image[0, :, :, :])
+        plt.imshow(((aug_image[0, :, :, :]+1) *127.5).astype(np.uint8))
         plt.figure('augmented depth')
         aug_depth = aug_depth[0, :, :]
         plt.imshow(np.reshape(aug_depth, [aug_depth.shape[0], aug_depth.shape[1]]))
