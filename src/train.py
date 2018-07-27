@@ -1,5 +1,5 @@
 from data import load_pair_paths, tf_data_generator, split_dataset, calculate_num_iter
-from model import depth_model, depth_model_v2
+from model import depth_model, depth_model_v2, depth_model_v3
 from loss import select_loss
 from dirs import create_dirs
 
@@ -51,6 +51,8 @@ def train():
     # Create the model
     if config.model_type == "v2":
         model = depth_model_v2(config)
+    elif config.model_type == "v3":
+        model = depth_model_v3(config)
     else:
         model = depth_model(config)
 

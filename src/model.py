@@ -71,6 +71,8 @@ def up_project(input, size, id, stride=1, bn=True):
 
 
 def depth_model(config):
+
+
     def resnet(input_tensor):
 
         with K.name_scope('resnet50'):
@@ -87,7 +89,7 @@ def depth_model(config):
 
             return resnet_model.get_layer('activation_48').output
 
-    input_tensor = Input(shape=(224, 224, 3))
+    input_tensor = Input(shape=config.input_size)
     x = resnet(input_tensor)
 
     with K.name_scope('upscaling'):
@@ -99,7 +101,7 @@ def depth_model(config):
         x = up_project(x, [3, 3, 256, 128], id='8x', stride=1, bn=True)
         x = up_project(x, [3, 3, 128, 64], id='16x', stride=1, bn=True)
         x = Dropout(0.2, name='drop')(x)
-        x = Conv2D(1, (3, 3), activation='sigmoid', name='OutputConv', strides=(1, 1), padding='same')(x)
+        x = Conv2D(1, (3, 3), activation='relu', name='OutputConv', strides=(1, 1), padding='same')(x)
 
         out = x
 
@@ -139,7 +141,7 @@ def depth_model_v2(config):
 
             return resnet_model.output
 
-    input_tensor = Input(shape=(224, 224, 3))
+    input_tensor = Input(shape=config.input_size)
     x = resnet(input_tensor)
     conv = DeConv(1024, padding="valid", activation="relu", kernel_size=3)(x)
     conv = UpSampling2D((2, 2))(conv)
@@ -152,7 +154,58 @@ def depth_model_v2(config):
     conv = DeConv(8, padding="valid", activation="relu", kernel_size=5)(conv)
     conv = UpSampling2D((2, 2))(conv)
     conv = DeConv(4, padding="valid", activation="relu", kernel_size=5)(conv)
-    conv = DeConv(1, padding="valid", activation="sigmoid", kernel_size=5)(conv)
+    conv = DeConv(1, padding="valid", activation="relu", kernel_size=5)(conv)
 
     model = Model(inputs=input_tensor, outputs=conv)
+    return model
+
+
+def depth_model_v3(config):
+
+    def up_project(input, size, id, stride=1):
+        with K.name_scope('up_project_' + id):
+
+            up = UpSampling2D((2, 2))(input)
+            branch1 = Conv2D(size, (5, 5), activation='relu',
+                                    strides=(stride, stride), padding='same')(up)
+            branch1 = Conv2D(size, (3, 3), activation=None,
+                             strides=(stride, stride), padding='same')(branch1)
+
+            branch2 = Conv2D(size, (5, 5), activation=None,
+                                    strides=(stride, stride), padding='same')(up)
+
+            out = Add()([branch1, branch2])
+
+            return out
+
+    def resnet(input_tensor):
+
+        with K.name_scope('resnet50'):
+
+            resnet_model = tf.keras.applications.ResNet50(weights='imagenet',
+                                                          include_top=False, input_tensor=input_tensor)
+
+            if config.train_resnet:
+                for layer in resnet_model.layers[:163]:
+                    layer.trainable = False
+            else:
+                for layer in resnet_model.layers:
+                    layer.trainable = False
+
+            return resnet_model.get_layer('activation_48').output
+
+    input_tensor = Input(shape=config.input_size)
+    x = resnet(input_tensor)
+
+    x = Conv2D(1024, (1, 1), activation='relu', name='layer1', strides=(1, 1), padding='same')(x)
+    x = BatchNormalization(name='layer1_bn')(x)
+    x = up_project(x, 512, '2x')
+    x = up_project(x, 256, '4x')
+    x = up_project(x, 128, '2x')
+
+    out = Conv2D(1, (3, 3), activation='relu',
+                     strides=(1, 1), padding='valid')(x)
+
+    model = Model(inputs=input_tensor, outputs=out)
+
     return model
