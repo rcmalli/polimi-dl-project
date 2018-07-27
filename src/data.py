@@ -42,16 +42,18 @@ def tf_data_generator(config, pair_paths, is_training):
         image -= 1.
 
         depthmap = tf.cast(depthmap, tf.float32)
-        depthmap = tf.div(
-            tf.subtract(
-                depthmap,
-                tf.reduce_min(depthmap)
-            ),
-            tf.subtract(
-                tf.reduce_max(depthmap),
-                tf.reduce_min(depthmap)
+
+        if config.normalize_depth:
+            depthmap = tf.div(
+                tf.subtract(
+                    depthmap,
+                    tf.reduce_min(depthmap)
+                ),
+                tf.subtract(
+                    tf.reduce_max(depthmap),
+                    tf.reduce_min(depthmap)
+                )
             )
-        )
         # depthmap = depthmap / 255.0
         # depthmap = tf.cast(depthmap, tf.int32)
 

@@ -2,11 +2,12 @@
 	"data_folder":"../data/pairs",
 	"exp_name": "nyu-resnet-mse-v3",
 	"num_epochs": 150,
-	"loss_type":"MSE",
+	"loss_type":"HUBER",
+	"normalize_depth": false,
 	"lamda":0.5,
-	"model_name": "model-15-0.10.km",
 	"num_threads": 5,
-  	"train_resnet": false,
+	"model_name": "model-a-b.km",
+  	"train_resnet": true,
 	"model_type" : "v3",
 	"early_stop_patience": 5,
 	"reduce_lr_factor": 0.9,
@@ -17,6 +18,3 @@
 	"batch_size": 32,
 	"input_size":[228,304,3],
 	"output_size":[58, 82,1] }
-
-
-

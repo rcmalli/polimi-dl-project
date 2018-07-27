@@ -191,10 +191,7 @@ def depth_model_v3(config):
             resnet_model = tf.keras.applications.ResNet50(weights='imagenet',
                                                           include_top=False, input_tensor=input_tensor)
 
-            if config.train_resnet:
-                for layer in resnet_model.layers[:163]:
-                    layer.trainable = False
-            else:
+            if not config.train_resnet:
                 for layer in resnet_model.layers:
                     layer.trainable = False
 
