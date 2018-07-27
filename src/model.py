@@ -176,6 +176,10 @@ def depth_model_v3(config):
 
             out = Add()([branch1, branch2])
 
+            out = Activation('relu')(out)
+
+
+
             return out
 
     def resnet(input_tensor):
