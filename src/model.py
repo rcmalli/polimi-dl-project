@@ -162,23 +162,17 @@ def depth_model_v2(config):
 
 def depth_model_v3(config):
 
-    def up_project(input, size, id, stride=1):
+    def up_project(input, size, id):
         with K.name_scope('up_project_' + id):
 
             up = UpSampling2D((2, 2))(input)
-            branch1 = Conv2D(size, (5, 5), activation='relu',
-                                    strides=(stride, stride), padding='same')(up)
-            branch1 = Conv2D(size, (3, 3), activation=None,
-                             strides=(stride, stride), padding='same')(branch1)
-
-            branch2 = Conv2D(size, (5, 5), activation=None,
-                                    strides=(stride, stride), padding='same')(up)
+            branch1 = DeConv(size, padding="same", activation="relu", kernel_size=5)(up)
+            branch1 = DeConv(size, padding="same", activation=None, kernel_size=3)(branch1)
+            branch2 = DeConv(size, padding="same", activation=None, kernel_size=5)(up)
 
             out = Add()([branch1, branch2])
 
             out = Activation('relu')(out)
-
-
 
             return out
 
@@ -201,14 +195,13 @@ def depth_model_v3(config):
     input_tensor = Input(shape=config.input_size)
     x = resnet(input_tensor)
 
-    x = Conv2D(1024, (1, 1), activation='relu', name='layer1', strides=(1, 1), padding='same')(x)
+    x = DeConv(1024, (1, 1), activation='relu', name='layer1', padding='same')(x)
     x = BatchNormalization(name='layer1_bn')(x)
     x = up_project(x, 512, '2x')
     x = up_project(x, 256, '4x')
     x = up_project(x, 128, '2x')
 
-    out = Conv2D(1, (3, 3), activation='relu',
-                     strides=(1, 1), padding='valid')(x)
+    out = DeConv(1, 3, activation='relu', padding='valid')(x)
 
     model = Model(inputs=input_tensor, outputs=out)
 
