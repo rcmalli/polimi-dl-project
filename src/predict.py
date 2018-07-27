@@ -24,6 +24,7 @@ def predict():
         x = preprocess_input(x)
 
         prediction = model.predict(x)
+        print("prediction shape",prediction.shape)
         prediction = np.reshape(prediction, [prediction.shape[1], prediction.shape[2]])
         plt.imsave('../images/depth_'+str(i+1) + '.jpg', prediction)
 
