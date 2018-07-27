@@ -198,19 +198,21 @@ def depth_model_v3(config):
 
             return resnet_model.get_layer('activation_48').output
 
-    input_tensor = Input(shape=config.input_size)
-    x = resnet(input_tensor)
+    with K.name_scope('depthmodel'):
 
-    with K.name_scope('upscaling'):
+        input_tensor = Input(shape=config.input_size)
+        x = resnet(input_tensor)
 
-        x = DeConv(1024, (1, 1), activation=None, name='layer1', padding='same')(x)
-        x = BatchNormalization()(x)
-        x = up_project(x, 512, '2x')
-        x = up_project(x, 256, '4x')
-        x = up_project(x, 128, '8x')
+        with K.name_scope('upscale'):
 
-        out = DeConv(1, 3, activation='relu', padding='valid')(x)
+            x = DeConv(1024, (1, 1), activation=None, name='layer1', padding='same')(x)
+            x = BatchNormalization()(x)
+            x = up_project(x, 512, '2x')
+            x = up_project(x, 256, '4x')
+            x = up_project(x, 128, '8x')
 
-    model = Model(inputs=input_tensor, outputs=out)
+            out = DeConv(1, 3, activation='relu', padding='valid')(x)
+
+        model = Model(inputs=input_tensor, outputs=out)
 
     return model
