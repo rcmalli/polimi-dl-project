@@ -13,8 +13,8 @@ from tensorflow.keras.callbacks import TensorBoard, EarlyStopping, ReduceLROnPla
 def create_callbacks(config):
     #es = EarlyStopping(monitor='val_loss', patience=config.early_stop_patience)
     tb = TensorBoard(log_dir=config.tensorboard_dir, write_images=True)
-    rp = ReduceLROnPlateau(monitor='val_loss', factor=config.reduce_lr_factor)
-    mc = ModelCheckpoint(filepath=config.model_dir + 'best_depth_model.km', save_best_only=True)
+    rp = ReduceLROnPlateau(monitor='val_loss', factor=config.reduce_lr_factor,verbose=1, min_lr=0.0000001)
+    mc = ModelCheckpoint(filepath=config.model_dir + 'best_depth_model.km', save_best_only=True, verbose=1)
     return [tb, rp, mc]
 
 
@@ -47,7 +47,7 @@ def train():
 
 
     # Create the model
-    model = depth_model()
+    model = depth_model(config)
 
     # Prepare for training
     model.compile(optimizer=select_optimizer(config), loss=select_loss(config))

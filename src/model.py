@@ -2,15 +2,8 @@ import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Dropout,\
     ZeroPadding2D, Concatenate, Activation,Add
 from tensorflow.keras.models import Model
-
-
-# class CustomPadding2D(ZeroPadding2D):
-#     def call(self, x, mask=None):
-#         pattern = [[0, 0],
-#                    [self.top_pad, self.bottom_pad],
-#                    [self.left_pad, self.right_pad],
-#                    [0, 0]]
-#         return tf.pad(x, pattern)
+from loss import dummy_mse
+from tensorflow.keras.models import load_model
 
 
 def unpool_as_conv(size, input, id, stride=1, relu=False, bn=True):
@@ -74,16 +67,25 @@ def up_project(input, size, id, stride=1, bn=True):
 
     return out
 
-def resnet(input_tensor):
-
-    resnet_model = tf.keras.applications.ResNet50(weights='imagenet',
-                                                  include_top=False, input_tensor=input_tensor)
 
 
-    return resnet_model.get_layer('activation_48').output
 
 
-def depth_model():
+
+
+def depth_model(config):
+
+    def resnet(input_tensor):
+
+        resnet_model = tf.keras.applications.ResNet50(weights='imagenet',
+                                                      include_top=False, input_tensor=input_tensor)
+
+        if not config.train_resnet:
+            for layer in resnet_model.layers:
+                layer.trainable = False
+
+        return resnet_model.get_layer('activation_48').output
+
     input_tensor = Input(shape=(224, 224, 3))
     x = resnet(input_tensor)
 
@@ -100,5 +102,12 @@ def depth_model():
 
     model = Model(inputs=input_tensor, outputs=out)
 
+
+    return model
+
+
+def load_depth_model(config):
+
+    model = load_model(config.model_dir + 'best_depth_model.km', custom_objects={'dummy_mse': dummy_mse})
 
     return model

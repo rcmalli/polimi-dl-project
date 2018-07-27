@@ -1,0 +1,33 @@
+from model import depth_model
+import tensorflow as tf
+import numpy as np
+from utils import get_args
+from config import process_config
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.resnet50 import preprocess_input
+import matplotlib.pyplot as plt
+from model import  load_depth_model
+
+
+def predict():
+
+    args = get_args()
+    config = process_config(args.config)
+    model = load_depth_model(config)
+
+
+    for i in range(3):
+
+        img = image.load_img('../images/'+str(i+1) + '.jpg', target_size=(224, 224))
+        x = image.img_to_array(img)
+        x = np.expand_dims(x, axis=0)
+        x = preprocess_input(x)
+
+        prediction = model.predict(x)
+        prediction = np.reshape(prediction, [prediction.shape[1], prediction.shape[2]])
+        plt.imsave('../images/depth_'+str(i+1) + '.jpg', prediction)
+
+
+
+if __name__ == '__main__':
+    predict()
