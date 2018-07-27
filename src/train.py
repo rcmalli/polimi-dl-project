@@ -37,6 +37,7 @@ def train():
     # split dataset train and test
     train_pairs, test_pairs = split_dataset(config, dataset)
 
+
     # Calculate steps for each epoch
     train_num_steps = calculate_num_iter(config, train_pairs)
     test_num_steps = calculate_num_iter(config, test_pairs)

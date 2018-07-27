@@ -4,6 +4,7 @@ import pickle
 from sklearn.model_selection import train_test_split
 import os
 
+
 def load_pair_paths(config):
     pair_paths = sorted([os.path.join(config.data_folder, x) for x in os.listdir(config.data_folder) if x.endswith('.pkl')])
     return pair_paths
@@ -20,6 +21,7 @@ def split_dataset(config, dataset):
 
 
 def tf_data_generator(config, pair_paths, is_training):
+
 
     def _read_file(pair_path):
 
