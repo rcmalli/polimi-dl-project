@@ -1,18 +1,22 @@
 {
 	"data_folder":"../data/pairs",
-	"exp_name": "nyu-resnet-mse",
+	"exp_name": "nyu-resnet-mse-v3",
 	"num_epochs": 150,
-	"model_name": "model-epoch4-val_loss0.0.km",
 	"loss_type":"MSE",
 	"lamda":0.5,
+	"model_name": "model-25-0.12.km",
 	"num_threads": 5,
   	"train_resnet": false,
+	"model_type" : "v3",
 	"early_stop_patience": 5,
 	"reduce_lr_factor": 0.9,
 	"augment": true,
-	"test_split": 0.1,
+	"test_split": 0.2,
 	"optimizer": "ADAM",
-	"learning_rate": 0.0001,
+	"learning_rate": 0.00001,
 	"batch_size": 32,
-	"input_size":[224,224,3],
-	"output_size":[112,112,1] }
+	"input_size":[304,228,3],
+	"output_size":[82,58,1] }
+
+
+
