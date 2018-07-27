@@ -6,11 +6,12 @@ import os
 
 
 def load_pair_paths(config):
-    pair_paths = sorted([os.path.join(config.data_folder, x) for x in os.listdir(config.data_folder) if x.endswith('.pkl')])
+    pair_paths = sorted(
+        [os.path.join(config.data_folder, x) for x in os.listdir(config.data_folder) if x.endswith('.pkl')])
     return pair_paths
 
-def calculate_num_iter(config, data):
 
+def calculate_num_iter(config, data):
     return int(len(data) / config.batch_size)
 
 
@@ -21,8 +22,6 @@ def split_dataset(config, dataset):
 
 
 def tf_data_generator(config, pair_paths, is_training):
-
-
     def _read_file(pair_path):
 
         fp = open(pair_path, 'rb')
@@ -30,13 +29,12 @@ def tf_data_generator(config, pair_paths, is_training):
 
         return data['image'], data['depth']
 
-    def _set_shapes(image,depth):
+    def _set_shapes(image, depth):
 
         image.set_shape([640, 480, 3])
         depth.set_shape([640, 480, 1])
 
         return image, depth
-
 
     def _normalize_data(image, depthmap):
         image = tf.cast(image, tf.float32)
@@ -44,6 +42,16 @@ def tf_data_generator(config, pair_paths, is_training):
         image -= 1.
 
         depthmap = tf.cast(depthmap, tf.float32)
+        depthmap = tf.div(
+            tf.subtract(
+                depthmap,
+                tf.reduce_min(depthmap)
+            ),
+            tf.subtract(
+                tf.reduce_max(depthmap),
+                tf.reduce_min(depthmap)
+            )
+        )
         # depthmap = depthmap / 255.0
         # depthmap = tf.cast(depthmap, tf.int32)
 
@@ -72,7 +80,7 @@ def tf_data_generator(config, pair_paths, is_training):
         lambda pair_path: tuple(tf.py_func(
             _read_file, [pair_path], [tf.uint8, tf.float32])))
 
-    #dataset = tf.data.Dataset.from_tensor_slices((images, depths))
+    # dataset = tf.data.Dataset.from_tensor_slices((images, depths))
     if is_training:
         dataset = dataset.shuffle(len(pair_paths))  # depends on sample size
 
