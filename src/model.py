@@ -199,7 +199,7 @@ def depth_model_v3(config):
     x = BatchNormalization(name='layer1_bn')(x)
     x = up_project(x, 512, '2x')
     x = up_project(x, 256, '4x')
-    x = up_project(x, 128, '2x')
+    x = up_project(x, 128, '8x')
 
     out = DeConv(1, 3, activation='relu', padding='valid')(x)
 
