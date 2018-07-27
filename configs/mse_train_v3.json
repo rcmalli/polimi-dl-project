@@ -5,7 +5,7 @@
 	"loss_type":"MSE",
 	"lamda":0.5,
 	"num_threads": 5,
-  	"train_resnet": false,
+  	"train_resnet": true,
 	"model_type" : "v3",
 	"early_stop_patience": 5,
 	"reduce_lr_factor": 0.9,
@@ -14,5 +14,5 @@
 	"optimizer": "ADAM",
 	"learning_rate": 0.00001,
 	"batch_size": 32,
-	"input_size":[304,228,3],
-	"output_size":[82,58,1] }
+	"input_size":[228,304,3],
+	"output_size":[58, 82,1] }
