@@ -228,12 +228,15 @@ def depth_model_v4(config):
 
         up = un_pool2d(input, size)
         x1 = Conv2D(size, (5, 5), activation='relu', padding='same')(up)
-        x1 = BatchNormalization()(x1)
+        if config.bn:
+            x1 = BatchNormalization()(x1)
         x1 = Conv2D(size, (3, 3), activation=None, padding='same')(x1)
-        x1 = BatchNormalization()(x1)
+        if config.bn:
+            x1 = BatchNormalization()(x1)
 
         x2 = Conv2D(size, (5, 5), activation='relu', padding='same')(up)
-        x2 = BatchNormalization()(x2)
+        if config.bn:
+            x2 = BatchNormalization()(x2)
 
         out = Add()([x1, x2])
         out = Activation('relu')(out)

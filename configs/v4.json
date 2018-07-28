@@ -1,10 +1,11 @@
 {
 	"data_folder":"../data/pairs",
-	"exp_name": "nyu-resnet-huber-v4",
+	"exp_name": "nyu-resnet-mse-v4-nobn",
 	"num_epochs": 150,
-	"loss_type":"HUBER",
+	"loss_type":"MSE",
 	"normalize_depth": false,
 	"lamda":0.5,
+	"bn": false,
 	"num_threads": 5,
 	"model_name": "model-a-b.km",
   	"train_resnet": false,
@@ -14,7 +15,7 @@
 	"augment": true,
 	"test_split": 0.2,
 	"optimizer": "ADAM",
-	"learning_rate": 0.0001,
+	"learning_rate": 0.001,
 	"batch_size": 32,
 	"input_size":[228,304,3],
 	"output_size":[112, 160,1] }
