@@ -215,3 +215,60 @@ def depth_model_v3(config):
         model = Model(inputs=input_tensor, outputs=out)
 
     return model
+
+
+def depth_model_v4(config):
+
+    def un_pool2d(input, size):
+
+        out = DeConv(size, padding="valid", activation=None, kernel_size=2, strides=(2, 2))(input)
+        return out
+
+    def up_project2d(input, size):
+
+        up = un_pool2d(input, size)
+        x1 = Conv2D(size, (5, 5), activation='relu', padding='same')(up)
+        x1 = BatchNormalization()(x1)
+        x1 = Conv2D(size, (3, 3), activation=None, padding='same')(x1)
+        x1 = BatchNormalization()(x1)
+
+        x2 = Conv2D(size, (5, 5), activation='relu', padding='same')(up)
+        x2 = BatchNormalization()(x2)
+
+        out = Add()([x1, x2])
+        out = Activation('relu')(out)
+
+        return out
+
+    def resnet(input_tensor):
+
+        with K.name_scope('resnet50'):
+
+            resnet_model = tf.keras.applications.ResNet50(weights='imagenet',
+                                                          include_top=False, input_tensor=input_tensor)
+
+            if not config.train_resnet:
+                for layer in resnet_model.layers:
+                    layer.trainable = False
+
+            return resnet_model.get_layer('activation_48').output
+
+    with K.name_scope('depthmodel'):
+
+        input_tensor = Input(shape=config.input_size)
+        resnet_out = resnet(input_tensor)
+
+        with K.name_scope('upscale'):
+
+            x = Conv2D(1024, (1, 1), activation=None, name='layer1', padding='same')(resnet_out)
+            x = BatchNormalization(name='layer1_bn')(x)
+            x = up_project2d(x, 512)
+            x = up_project2d(x, 256)
+            x = up_project2d(x, 128)
+            x = up_project2d(x, 64)
+
+            out = Conv2D(1, 3, activation='relu', padding='same', name= 'conv_output')(x)
+
+        model = Model(inputs=input_tensor, outputs=out)
+
+    return model
