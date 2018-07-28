@@ -43,10 +43,6 @@ def train():
     train_num_steps = calculate_num_iter(config, train_pairs)
     test_num_steps = calculate_num_iter(config, test_pairs)
 
-    # Create train and test data generators
-    train_gen = tf_data_generator(config, train_pairs, is_training=True)
-    test_gen = tf_data_generator(config,test_pairs, is_training=False)
-
 
     # Create the model
     if config.model_type == "v2":
@@ -57,6 +53,13 @@ def train():
         model = depth_model_v4(config)
     else:
         model = depth_model(config)
+
+    #set dynamic output shape
+    config.output_size = list(model.output_shape[1:])
+
+    # Create train and test data generators
+    train_gen = tf_data_generator(config, train_pairs, is_training=True)
+    test_gen = tf_data_generator(config,test_pairs, is_training=False)
 
     # Prepare for training
     model.compile(optimizer=select_optimizer(config), loss=select_loss(config))

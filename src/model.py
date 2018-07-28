@@ -250,7 +250,10 @@ def depth_model_v4(config):
             resnet_model = tf.keras.applications.ResNet50(weights='imagenet',
                                                           include_top=False, input_tensor=input_tensor)
 
-            if not config.train_resnet:
+            if config.train_resnet:
+                for layer in resnet_model.layers[:139]:
+                    layer.trainable = False
+            else:
                 for layer in resnet_model.layers:
                     layer.trainable = False
 
@@ -265,10 +268,8 @@ def depth_model_v4(config):
 
             x = Conv2D(1024, (1, 1), activation=None, name='layer1', padding='same')(resnet_out)
             x = BatchNormalization(name='layer1_bn')(x)
-            x = up_project2d(x, 512)
-            x = up_project2d(x, 256)
-            x = up_project2d(x, 128)
-            x = up_project2d(x, 64)
+            for i in range(config.upscale):
+                x = up_project2d(x, int((5-i)*64))
 
             out = Conv2D(1, 3, activation='relu', padding='same', name= 'conv_output')(x)
 

@@ -7,13 +7,14 @@
 	"num_threads": 2,
   	"train_resnet": true,
 	"normalize_depth": false,
+	"bn":true,
 	"model_type" : "v4",
 	"early_stop_patience": 5,
 	"reduce_lr_factor": 0.9,
+	"upscale": 2,
 	"augment": true,
 	"test_split": 0.1,
 	"optimizer": "ADAM",
 	"learning_rate": 0.00001,
 	"batch_size": 2,
-	"input_size":[228,304,3],
-	"output_size":[58, 82,1] }
+	"input_size":[228,304,3]}

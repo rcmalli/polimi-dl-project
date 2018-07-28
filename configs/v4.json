@@ -1,21 +1,33 @@
 {
+	// data path
 	"data_folder":"../data/pairs",
-	"exp_name": "nyu-resnet-mse-v4-nobn",
+
+	// experiment name
+	"exp_name": "nyu-resnet-mse-v4-small",
+
+	// training parameters
 	"num_epochs": 150,
+	"optimizer": "ADAM",
+	"learning_rate": 0.0001,
+	"batch_size": 32,
 	"loss_type":"MSE",
-	"normalize_depth": false,
 	"lamda":0.5,
-	"bn": false,
 	"num_threads": 5,
-	"model_name": "model-a-b.km",
-  	"train_resnet": false,
-	"model_type" : "v4",
 	"early_stop_patience": 5,
 	"reduce_lr_factor": 0.9,
-	"augment": true,
+
+	// data parameters
 	"test_split": 0.2,
-	"optimizer": "ADAM",
-	"learning_rate": 0.001,
-	"batch_size": 32,
+	"normalize_depth": false,
+	"augment": true,
 	"input_size":[228,304,3],
-	"output_size":[112, 160,1] }
+
+	// model parameters
+	"upscale": 2, // 1 to 4
+	"bn": true,
+	"model_type" : "v4",
+	"train_resnet": true, // only last 3 block
+
+	// prediction parameters
+	"model_name": "model-a-b.km"
+}
