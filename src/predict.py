@@ -16,7 +16,7 @@ def predict():
     model = load_depth_model(config)
 
 
-    for i in range(3):
+    for i in range(4):
 
         img = image.load_img('../images/'+str(i+1) + '.jpg', target_size=(config.input_size[0], config.input_size[1]))
         x = image.img_to_array(img)
