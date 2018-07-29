@@ -3,7 +3,7 @@
 	"exp_name": "nyu-resnet-berhu-aug-29jul",
 	"num_epochs": 100,
 	"loss_type":"BERHU",
-	"learning_rate": 0.00001,
+	"learning_rate": 0.0001,
 	"batch_size": 32,
 	"lamda":0.5,
 	"num_threads": 5,
@@ -11,7 +11,7 @@
 	"optimizer": "ADAM",
 	"reduce_lr_factor": 0.9,
 	"test_split": 0.2,
-	"normalize_depth": false,
+	"normalize_depth": true,
 	"flip_left_right": true,
 	"corrupt_saturation": true,
 	"corrupt_brightness": true,
@@ -22,6 +22,6 @@
 	"upscale": 4,
 	"bn": true,
 	"model_type" : "v4",
-	"train_resnet": false,
+	"train_resnet": true,
 	"prediction_model_name": "model-a-b.km"
 }

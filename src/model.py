@@ -224,7 +224,7 @@ def depth_model_v4(config):
     def un_pool2d(input, size):
 
         out = UpSampling2D((2, 2))(input)
-        out = DeConv(size, padding="same", activation=None, kernel_size=2)(out)
+        #out = DeConv(size, padding="same", activation=None, kernel_size=2)(out)
         return out
 
     def up_project2d(input, size):
@@ -254,7 +254,7 @@ def depth_model_v4(config):
                                                           include_top=False, input_tensor=input_tensor)
 
             if config.train_resnet:
-                for layer in resnet_model.layers[:139]:
+                for layer in resnet_model.layers[:163]:
                     layer.trainable = False
             else:
                 for layer in resnet_model.layers:
@@ -270,6 +270,9 @@ def depth_model_v4(config):
         with K.name_scope('upscale'):
 
             x = Conv2D(1024, (1, 1), activation=None, name='layer1', padding='same')(resnet_out)
+            x = Conv2D(1024, (1, 1), activation=None, name='layer1', padding='same')(x)
+            x = Conv2D(1024, (1, 1), activation=None, name='layer1', padding='same')(x)
+            x = Conv2D(1024, (1, 1), activation=None, name='layer1', padding='same')(x)
             x = BatchNormalization(name='layer1_bn')(x)
             for i in range(config.upscale):
                 x = up_project2d(x, int((2**(3-i))*64))
