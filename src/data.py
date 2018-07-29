@@ -26,7 +26,6 @@ def tf_data_generator(config, pair_paths, is_training):
 
         fp = open(pair_path, 'rb')
         data = pickle.load(fp)
-
         return data['image'], data['depth']
 
     def _set_shapes(image, depth):
@@ -91,7 +90,6 @@ def tf_data_generator(config, pair_paths, is_training):
     if config.augment and is_training:
         dataset = dataset.map(_flip_left_right,
                               num_parallel_calls=config.num_threads)
-
     dataset = dataset.map(_normalize_data,
                           num_parallel_calls=config.num_threads)
 

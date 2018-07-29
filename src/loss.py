@@ -11,6 +11,25 @@ def simse_create(config):
 
     return simse
 
+def berhu(target, pred):
+    
+    # Get absolute error for each pixel in batch 
+    abs_error = tf.abs(tf.subtract(target, pred), name='abs_error')
+
+    # Calculate threshold c from max error
+    c = 0.2 * tf.reduce_max(abs_error)
+    print(c)
+    # if, then, else
+    berHu_loss = tf.where(abs_error <= c,   
+                   abs_error, 
+                  (tf.square(abs_error) + tf.square(c))/(2*c))
+            
+    return tf.reduce_sum(berHu_loss)
+
+
+
+
+
 
 def huber(target, pred):
     return tf.reduce_mean(tf.losses.huber_loss(labels=target, predictions=pred))
@@ -23,6 +42,8 @@ def dummy_mse(target, pred):
 def select_loss(config):
     if config.loss_type == "HUBER":
         return huber
+    elif config.loss_type == "BERHU":
+        return berhu
     elif config.loss_type == "SIMSE":
         return simse_create(config)
     elif config.loss_type == "MAE":

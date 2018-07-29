@@ -1,11 +1,11 @@
 {
 	"data_folder":"../data/pairs",
-	"exp_name": "nyu-resnet-mse-v4-small",
+	"exp_name": "nyu-resnet-mse-v4-aug-small",
 	"num_epochs": 150,
 	"optimizer": "ADAM",
 	"learning_rate": 0.0001,
 	"batch_size": 32,
-	"loss_type":"BERHU",
+	"loss_type":"MSE",
 	"lamda":0.5,
 	"num_threads": 5,
 	"early_stop_patience": 5,
