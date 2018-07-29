@@ -23,6 +23,12 @@ def load_depth_model(config):
 
     return model
 
+def load_depth_model_from_weights(config):
+
+    model = depth_model(config)
+    model.load_weights(config.model_dir + config.prediction_model_name)
+    return model
+
 
 
 

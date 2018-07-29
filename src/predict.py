@@ -6,14 +6,14 @@ from config import process_config
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.resnet50 import preprocess_input
 import matplotlib.pyplot as plt
-from model import  load_depth_model
+from model import  load_depth_model_from_weights
 
 
 def predict():
 
     args = get_args()
     config = process_config(args.config)
-    model = load_depth_model(config)
+    model = load_depth_model_from_weights(config)
 
 
     for i in range(4):
