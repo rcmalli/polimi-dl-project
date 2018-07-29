@@ -135,6 +135,7 @@ def depth_model(config):
 
         with K.name_scope('upscale'):
 
+            x = Conv2D(1024, (1, 1), activation=None, name='layer1', padding='same')(resnet_out)
             x = BatchNormalization(name='layer1_bn')(x)
             for i in range(config.upscale):
                 if config.model_type == "up_projection":
