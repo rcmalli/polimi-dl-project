@@ -35,7 +35,8 @@ def load_depth_model_from_weights(config):
 
 def unpool_resize(input):
     def unpool_resize_func(input_tensor):
-        output = tf.image.resize_images(input_tensor, size=[int(input_tensor.shape[1] * 2), int(input_tensor.shape[1] * 2)])
+        output = tf.image.resize_images(input_tensor, size=[int(input_tensor.shape[1] * 2), int(input_tensor.shape[1] * 2)],
+                                        method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
         return output
 
     def unpool_output_shape(input_shape):
