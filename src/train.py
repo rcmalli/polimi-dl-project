@@ -41,7 +41,9 @@ def train():
     if config.debug:
         print("WARNING!!! DEBUG MODE ON! 100 training.")
         train_pairs = train_pairs[:100]
+        print(train_pairs)
         test_pairs = test_pairs[:100]
+        print(test_pairs)
 
     # Calculate steps for each epoch
     train_num_steps = calculate_num_iter(config, train_pairs)
