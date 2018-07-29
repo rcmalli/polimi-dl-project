@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Dropout, 
     ZeroPadding2D, Concatenate, Activation, Add, UpSampling2D
 from tensorflow.keras.layers import Conv2DTranspose as DeConv
 from tensorflow.keras.models import Model
-from loss import dummy_mse, huber, simse_create
+from loss import dummy_mse, huber, simse_create ,berhu
 from tensorflow.keras.models import load_model
 from keras import backend as K
 
@@ -117,6 +117,8 @@ def load_depth_model(config):
         custom_object_dict = {'huber': huber}
     elif config.loss_type == "SIMSE":
         custom_object_dict = {'simse': simse_create}
+    elif config.loss_type == "BERHU":
+        custom_object_dict = {'berhu': berhu}
     else:
         custom_object_dict = {}
 
