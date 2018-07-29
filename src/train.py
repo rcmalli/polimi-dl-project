@@ -50,9 +50,7 @@ def train():
     elif config.model_type == "v3":
         model = depth_model_v3(config)
     elif config.model_type == "v4":
-        model = depth_model_v4(config)
-    elif config.model_type == "v5":
-        model = depth_model_v5(config)    
+        model = depth_model_v4(config)    
     else:
         model = depth_model(config)
 

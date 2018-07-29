@@ -18,7 +18,6 @@ def berhu(target, pred):
 
     # Calculate threshold c from max error
     c = 0.2 * tf.reduce_max(abs_error)
-    print(c)
     # if, then, else
     berHu_loss = tf.where(abs_error <= c,   
                    abs_error, 
