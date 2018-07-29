@@ -38,6 +38,10 @@ def train():
     # split dataset train and test
     train_pairs, test_pairs = split_dataset(config, dataset)
 
+    if config.debug:
+        print("WARNING!!! DEBUG MODE ON! 100 training.")
+        train_pairs = train_pairs[:100]
+        test_pairs = test_pairs[:100]
 
     # Calculate steps for each epoch
     train_num_steps = calculate_num_iter(config, train_pairs)

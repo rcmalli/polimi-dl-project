@@ -52,7 +52,7 @@ def unpool_simple(input):
 
 def unpool_deconv(input, size):
 
-    return Conv2DTranspose(size, 4, (2, 2), padding='same')(input)
+    return Conv2DTranspose(size, 2, (2, 2), padding='same')(input)
 
 def unpool_checkerboard(input):
 
