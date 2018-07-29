@@ -23,7 +23,8 @@ def berhu(target, pred):
                    abs_error, 
                   (tf.square(abs_error) + tf.square(c))/(2*c))
             
-    return tf.reduce_sum(berHu_loss)
+    return tf.reduce_mean(berHu_loss)
+
 
 
 

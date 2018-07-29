@@ -1,6 +1,6 @@
 {
 	"data_folder":"../data/pairs",
-	"exp_name": "nyu-resnet-berhu-aug-29jul",
+	"exp_name": "nyu-resnet-berhu-aug-29jul_2",
 	"num_epochs": 100,
 	"loss_type":"BERHU",
 	"learning_rate": 0.00001,
@@ -11,7 +11,7 @@
 	"optimizer": "ADAM",
 	"reduce_lr_factor": 0.9,
 	"test_split": 0.2,
-	"normalize_depth": false,
+	"normalize_depth": true,
 	"flip_left_right": true,
 	"corrupt_saturation": true,
 	"corrupt_brightness": true,
@@ -20,8 +20,14 @@
 	"random_rotate": true,
 	"input_size":[228,304,3],
 	"upscale": 4,
+<<<<<<< HEAD:configs/main.json
 	"bn": true,
 	"model_type" : "upconvolution",
 	"train_resnet": false,
+=======
+	"bn": false,
+	"model_type" : "v4",
+	"train_resnet": true,
+>>>>>>> dcd26dbdc9eaabe3653c45b185f4546d238c60c9:configs/v4.json
 	"prediction_model_name": "model-a-b.km"
 }
