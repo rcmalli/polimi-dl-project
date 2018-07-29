@@ -221,7 +221,8 @@ def depth_model_v4(config):
 
     def un_pool2d(input, size):
 
-        out = DeConv(size, padding="valid", activation=None, kernel_size=2, strides=(2, 2))(input)
+        out = UpSampling2D((2, 2))(input)
+        out = DeConv(size, padding="same", activation=None, kernel_size=2)(out)
         return out
 
     def up_project2d(input, size):
@@ -234,7 +235,7 @@ def depth_model_v4(config):
         if config.bn:
             x1 = BatchNormalization()(x1)
 
-        x2 = Conv2D(size, (5, 5), activation='relu', padding='same')(up)
+        x2 = Conv2D(size, (5, 5), activation=None, padding='same')(up)
         if config.bn:
             x2 = BatchNormalization()(x2)
 
