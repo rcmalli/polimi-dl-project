@@ -269,11 +269,11 @@ def depth_model_v4(config):
 
         with K.name_scope('upscale'):
 
-            x = Conv2D(1024, (1, 1), activation=None, name='layer1', padding='same')(resnet_out)
-            x = Conv2D(1024, (1, 1), activation=None, name='layer2', padding='same')(x)
-            x = Conv2D(1024, (1, 1), activation=None, name='layer3', padding='same')(x)
-            x = Conv2D(1024, (1, 1), activation=None, name='layer4', padding='same')(x)
-            x = Conv2D(1024, (1, 1), activation=None, name='layer5', padding='same')(x)
+            x = Conv2D(1024, (2, 2), activation=None, name='layer1', padding='same')(resnet_out)
+            x = Conv2D(1024, (2, 2), activation=None, name='layer2', padding='same')(x)
+            x = Conv2D(1024, (2, 2), activation=None, name='layer3', padding='same')(x)
+            x = Conv2D(1024, (2, 2), activation=None, name='layer4', padding='same')(x)
+            x = Conv2D(1024, (2, 2), activation=None, name='layer5', padding='same')(x)
             x = BatchNormalization(name='layer1_bn')(x)
             for i in range(config.upscale):
                 x = up_project2d(x, int((2**(3-i))*64))
