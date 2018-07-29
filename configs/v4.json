@@ -1,8 +1,8 @@
 {
 	"data_folder":"../data/pairs",
-	"exp_name": "nyu-resnet-mse-aug-29jul",
+	"exp_name": "nyu-resnet-berhu-aug-29jul",
 	"num_epochs": 100,
-	"loss_type":"MSE",
+	"loss_type":"BERHU",
 	"learning_rate": 0.00001,
 	"batch_size": 32,
 	"lamda":0.5,
