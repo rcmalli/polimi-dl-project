@@ -21,7 +21,7 @@
 	"input_size":[228,304,3],
 	"upscale": 4,
 	"bn": true,
-	"model_type" : "v4",
+	"model_type" : "upconvolution",
 	"train_resnet": false,
 	"prediction_model_name": "model-a-b.km"
 }

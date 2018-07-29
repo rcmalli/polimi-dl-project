@@ -21,7 +21,8 @@
 	"input_size":[228,304,3],
 	"upscale": 2,
 	"bn": true,
-	"model_type" : "v4",
+	"model_type" : "up_projection",
+	"unpool_type": "checkerboard",
 	"train_resnet": false,
 	"prediction_model_name": "model-a-b.km"
 }
