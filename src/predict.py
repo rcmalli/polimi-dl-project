@@ -3,6 +3,7 @@ import tensorflow as tf
 import numpy as np
 from utils import get_args
 from config import process_config
+
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.resnet50 import preprocess_input
 import matplotlib.pyplot as plt

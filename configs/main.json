@@ -25,5 +25,5 @@
 	"model_type" : "up_projection",
 	"unpool_type": "deconv",
 	"train_resnet": false,
-	"prediction_model_name": "model-a-b.km"
+	"prediction_model_name": "model-150-0.19.km"
 }
