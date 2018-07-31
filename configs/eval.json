@@ -1,8 +1,8 @@
 {
 	"data_folder":"../data/pairs",
-	"exp_name": "nyu-resnet-simse-aug-31-simple-upproject",
+	"exp_name": "nyu-resnet-berhu-aug-30-checkerboard-upproject",
 	"num_epochs": 150,
-	"loss_type":"SIMSE",
+	"loss_type":"BERHU",
 	"learning_rate": 0.0001,
 	"batch_size": 32,
 	"lamda":0.5,
@@ -23,7 +23,8 @@
 	"upscale": 4,
 	"bn": true,
 	"model_type" : "up_projection",
-	"unpool_type": "simple",
+	"unpool_type": "checkerboard",
 	"train_resnet": false,
-	"prediction_model_name": "model-150-0.05.km"
+	"prediction_model_name": "model-150-0.21.km"
 }
+

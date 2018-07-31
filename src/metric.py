@@ -9,12 +9,15 @@ def abs_relative(target, pred):
     # Get absolute error for each pixel in batch
     rel_error = tf.abs(tf.subtract(target, pred), name='abs_error') / target
 
-    return tf.reduce_mean(rel_error)
+    return tf.reduce_sum(rel_error)
 
 def t_relative(target, pred):
-    # Get absolute error for each pixel in batch
-    t = tf.max(tf.divide(target, pred),tf.divide(pred,target), name='t_relative') 
-    elements_greater_value = tf.greater(t, tf.constant(1.25))
-    as_ints = tf.cast(elements_equal_to_value, tf.int32)
-    count = tf.reduce_sum(as_ints)
+    # Get relative error for each pixel in batch
+    t = tf.maximum(tf.divide(target, pred),tf.divide(pred,target), name='t_relative') 
+    # Find pixels relative error is less than 1.25
+    t = tf.less(t, tf.constant(1.25))
+    # Cast to int
+    t = tf.cast(t, tf.int32)
+    # Count pixels
+    count = tf.reduce_sum(t)
     return tf.divide(count,tf.size(t))
