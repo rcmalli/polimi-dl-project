@@ -1,10 +1,13 @@
 #MAC
 .DS_Store
 
-# Tensorflow
+# Project
 
+data/*
+data/
 experiments/*
 .idea/
+images/depth*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
