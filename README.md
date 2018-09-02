@@ -1,10 +1,9 @@
-# Project Name 
+# Depth Extraction from Single Image
 
-The name is subject to change.
 
-## Helpful Links
+## Published Paper
 
-- [Project Proposal Link](https://docs.google.com/forms/d/e/1FAIpQLSe-LeEJnyCGX60kmNhbEbsGJJU9ZlLyTVNy9A8IyHTNLHbkDg/viewform)
+- TBA
 
 
 ## Project Members
